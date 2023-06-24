@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "{{ projectname}}"
+version = "0.1.0"
+description = "{{ description }}"
+license = "MIT"
+authors = ["{{ username }} <{{ email }}>"]
+readme = "README.md"
+repository = "https://github.com/{{ username }}/{{ projectname }}"
+documentation = "{{ docsurl }}"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+# Pydantic and OmegaConf are used for configuration
+pydantic = { version = "^1.10", extras = ["dotenv"] }
+omegaconf = "^2.3"
+# Typer and Rich make it easy to build CLI apps
+typer = { version = "^0.9", extras = ["all"] }
+rich = "^13.4"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7"
+
+[tool.poetry.scripts]
+# Register CLI
+{{ projectname}} = "{{ importname}}.__main__:cli"
+
+# See: https://python-poetry.org/docs/pyproject/#poetry-and-pep-517
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

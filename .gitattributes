@@ -1,0 +1,4 @@
+# Take only files in src into account for language stats
+* linguist-vendored
+tests/** -linguist-vendored linguist-documentation
+src/** -linguist-vendored

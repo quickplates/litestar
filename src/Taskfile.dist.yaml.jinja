@@ -1,0 +1,274 @@
+---
+version: "3"
+
+tasks:
+  template:
+    desc: Fetch template updates
+    interactive: true
+    env:
+      GIT_CONFIG_COUNT: 1
+      GIT_CONFIG_KEY_0: commit.gpgsign
+      GIT_CONFIG_VALUE_0: false
+    cmds:
+      - >
+        copier
+        update
+        --answers-file
+        .copier-answers.yaml
+        {{ '{{ .CLI_ARGS }}' }}
+  flake:
+    desc: Update flake.lock
+    cmds:
+      - >
+        nix
+        --accept-flake-config
+        --extra-experimental-features 'nix-command flakes'
+        --no-warn-dirty
+        flake
+        update
+        {{ '{{ .CLI_ARGS }}' }}
+  fmt:
+    desc: Format files
+    cmds:
+      - >
+        trunk
+        fmt
+        {{ '{{ .CLI_ARGS }}' }}
+  lint:
+    desc: Lint files
+    cmds:
+      - >
+        trunk
+        check
+        {{ '{{ .CLI_ARGS }}' }}
+  {%- if docs %}
+  clean-docs:
+    desc: Clean docs
+    dir: docs
+    cmds:
+      - >
+        rm
+        --recursive
+        --force
+        ./node_modules/
+    status:
+      - >
+        test
+        '!'
+        -d
+        ./node_modules/
+  install-docs:
+    desc: Install docs dependencies
+    dir: docs
+    sources:
+      - ./package.json
+      - ./package-lock.json
+      - ../flake.lock
+      - ../*.nix
+      - ../Taskfile.dist.{yaml,yml}
+      - ../{taskfile,Taskfile}.{yaml,yml}
+    generates:
+      - ./node_modules/**/*
+    cmds:
+      - >
+        npm
+        install
+        {{ '{{ .CLI_ARGS }}' }}
+  install-docs-internal:
+    desc: Install docs dependencies quietly
+    internal: true
+    dir: docs
+    cmds:
+      - task: install-docs
+        vars:
+          CLI_ARGS: >
+            --prefer-offline
+            --no-audit
+            --no-fund
+            --quiet
+            --no-progress
+  update-docs:
+    desc: Update docs dependencies
+    dir: docs
+    cmds:
+      - task: install-docs-internal
+      - >
+        npm
+        run
+        update
+        --
+        {{ '{{ .CLI_ARGS }}' }}
+  test-docs:
+    desc: Test docs
+    dir: docs
+    cmds:
+      - task: install-docs-internal
+      - >
+        npm
+        run
+        test
+        --
+        {{ '{{ .CLI_ARGS }}' }}
+  docs:
+    desc: Run docusaurus
+    dir: docs
+    interactive: true
+    cmds:
+      - task: install-docs-internal
+      - >
+        npm
+        run
+        docs
+        --
+        {{ '{{ .CLI_ARGS | default "start --host 0.0.0.0" }}' }}
+  {%- endif %}
+  clean:
+    desc: Clean virtualenv
+    cmds:
+      - >
+        rm
+        --recursive
+        --force
+        {{ '{{ .CLI_ARGS }}' }}
+        .venv
+    status:
+      - >
+        test
+        '!'
+        -d
+        ./.venv/
+  venv:
+    desc: Create virtualenv
+    cmds:
+      - task: clean
+        vars:
+          CLI_ARGS: ""
+      - >
+        python
+        -m
+        venv
+        {{ '{{ .CLI_ARGS }}' }}
+        .venv
+    status:
+      - >
+        test
+        -d
+        ./.venv/
+  install:
+    desc: Install package
+    sources:
+      - ./flake.lock
+      - ./*.nix
+      - ./poetry.lock
+      - ./poetry.toml
+      - ./pyproject.toml
+      - ./Taskfile.dist.{yaml,yml}
+      - ./{taskfile,Taskfile}.{yaml,yml}
+    generates:
+      - ./.venv/lib/python*/site-packages/{{ importname }}-*.dist-info/*
+    cmds:
+      - task: venv
+        vars:
+          CLI_ARGS: ""
+      - >
+        source
+        .venv/bin/activate
+        &&
+        poetry
+        install
+        --sync
+        --no-interaction
+        {{ '{{ .CLI_ARGS }}' }}
+  install-internal:
+    desc: Install package quietly
+    internal: true
+    cmds:
+      - task: install
+        vars:
+          CLI_ARGS: "--quiet"
+  update:
+    desc: Update dependencies
+    cmds:
+      - task: venv
+        vars:
+          CLI_ARGS: ""
+      - >
+        source
+        .venv/bin/activate
+        &&
+        poetry
+        update
+        --no-interaction
+        {{ '{{ .CLI_ARGS }}' }}
+  lock:
+    desc: Update dependencies versions in lock file
+    cmds:
+      - task: venv
+        vars:
+          CLI_ARGS: ""
+      - >
+        source
+        .venv/bin/activate
+        &&
+        poetry
+        lock
+        --no-interaction
+        {{ '{{ .CLI_ARGS }}' }}
+  bump:
+    desc: Bump version
+    cmds:
+      - >
+        source
+        .venv/bin/activate
+        &&
+        poetry
+        version
+        {{ '{{ .CLI_ARGS | default "patch" }}' }}
+  test:
+    desc: Run tests
+    cmds:
+      - task: install-internal
+      - >
+        source
+        .venv/bin/activate
+        &&
+        pytest
+        {{ '{{ .CLI_ARGS }}' }}
+  run:
+    desc: Run package
+    interactive: true
+    cmds:
+      - task: install-internal
+      - >
+        source
+        .venv/bin/activate
+        &&
+        {{ projectname }}
+        {{ '{{ .CLI_ARGS }}' }}
+  docker-build:
+    desc: Build docker image
+    cmds:
+      - >
+        docker
+        build
+        --tag
+        {{ projectname }}
+        {{ '{{ .CLI_ARGS }}' }}
+        .
+  docker:
+    desc: Run docker image
+    interactive: true
+    cmds:
+      - task: docker-build
+        vars:
+          CLI_ARGS: ""
+      - >
+        docker
+        run
+        --rm
+        --interactive
+        --tty
+        --network
+        host
+        {{ projectname }}
+        {{ '{{ .CLI_ARGS }}' }}

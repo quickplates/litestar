@@ -1,0 +1,17 @@
+---
+changelog:
+  exclude:
+    # Exclude PRs with the following labels from the changelog
+    labels:
+      - skip-changelog
+  # Categories are used make sections in the changelog based on PR labels
+  categories:
+    - title: 🚀 Features
+      labels:
+        - feature
+    - title: 🐛 Bug Fixes
+      labels:
+        - bug
+    - title: 🧽 Cleanup
+      labels:
+        - cleanup

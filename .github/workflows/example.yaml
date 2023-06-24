@@ -1,0 +1,265 @@
+---
+name: Example
+
+# Only one workflow can run at a time
+# If there is newer workflow in progress, cancel older ones
+concurrency:
+  group: example
+  cancel-in-progress: true
+
+# Put 'on' in quotes to avoid YAML parsing error
+"on":
+  # Enable manual triggering
+  workflow_dispatch: {}
+  # Run on commits to main branch
+  push:
+    branches:
+      - main
+    # Run only on changes to relevant files
+    paths:
+      - "copier.yaml"
+      - "flake.nix"
+      - "flake.lock"
+      - "src/**"
+      - "Taskfile.dist.yaml"
+      - ".github/workflows/example.yaml"
+
+jobs:
+  build:
+    name: Build template
+    # Pin version of Ubuntu to avoid breaking changes
+    runs-on: ubuntu-22.04
+    # Use reasonable timeout to avoid stuck workflows
+    timeout-minutes: 5
+    env:
+      NIX_CACHE_DIR: /home/runner/.nixcache
+    permissions:
+      # Needed to checkout code
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.2
+      - name: Setup Nix cache
+        uses: actions/cache@v3.3.1
+        id: cache-nix
+        with:
+          path: ${{ env.NIX_CACHE_DIR }}
+          key: example-nix
+      - name: Install Nix
+        uses: cachix/install-nix-action@v21
+        with:
+          github_access_token: ${{ github.token }}
+          install_url: https://releases.nixos.org/nix/nix-2.15.1/install
+      # See: https://github.com/cachix/install-nix-action/issues/56
+      - name: Import Nix store cache
+        if: steps.cache-nix.outputs.cache-hit == 'true'
+        run: >
+          nix-store
+          --import
+          < ${{ env.NIX_CACHE_DIR }}/archive.nar
+      - name: Build template files
+        run: >
+          nix
+          develop
+          .#template
+          --command
+          --
+          task
+          shallow-build
+      # Create archive to retain file permissions
+      - name: Create archive
+        run: >
+          tar
+          -C build
+          -cvf
+          archive.tar
+          .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: build
+          path: archive.tar
+      # See: https://github.com/cachix/install-nix-action/issues/56
+      - name: Export Nix store cache
+        if: "!cancelled()"
+        run: >
+          mkdir
+          -p
+          ${{ env.NIX_CACHE_DIR }}
+          &&
+          nix-store
+          --export $(find /nix/store -maxdepth 1 -name '*-*')
+          > ${{ env.NIX_CACHE_DIR }}/archive.nar
+  push:
+    name: Push changes
+    # Run only if build job succeeded
+    needs: build
+    # Pin version of Ubuntu to avoid breaking changes
+    runs-on: ubuntu-22.04
+    # Use reasonable timeout to avoid stuck workflows
+    timeout-minutes: 5
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: build
+      - name: Extract archive
+        run: >
+          mkdir
+          -p
+          build
+          &&
+          tar
+          -C build
+          -xvf
+          archive.tar
+      - name: Checkout example repository
+        uses: actions/checkout@v3.5.2
+        with:
+          repository: ${{ github.repository }}-example
+          token: ${{ secrets.ACCESS_TOKEN }}
+          # Needed to reset to first commit
+          fetch-depth: 0
+          path: example
+      # Configure git to use GitHub Actions bot as committer
+      - name: Configure git
+        working-directory: example
+        run: >
+          git
+          config
+          user.name
+          "github-actions[bot]"
+          &&
+          git
+          config
+          user.email
+          "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Reset example repository to first commit
+        working-directory: example
+        run: >
+          git
+          reset
+          --hard
+          $(git rev-list --max-parents=0 HEAD)
+      - name: Push changes
+        working-directory: example
+        run: >
+          git
+          push
+          --force
+          origin
+          HEAD
+      - name: Create new branch
+        working-directory: example
+        run: >
+          git
+          checkout
+          -b
+          build
+      - name: Copy build output
+        run: >
+          cp
+          -r
+          build/.
+          example
+      - name: Add changes
+        working-directory: example
+        run: >
+          git
+          add
+          .
+      - name: Commit changes
+        working-directory: example
+        run: >
+          git
+          commit
+          --message
+          "Added template files"
+      - name: Push changes
+        working-directory: example
+        run: >
+          git
+          push
+          --force
+          origin
+          HEAD
+      - name: Create pull request
+        working-directory: example
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: >
+          gh
+          pr
+          create
+          --title
+          "Added template files"
+          --body
+          'Created automatically by GitHub Actions workflow from
+          [`${{ github.repository }}`](
+          ${{ github.server_url }}/${{ github.repository }}
+          ).'
+          --base
+          main
+          --assignee
+          "@me"
+          --fill
+          --label
+          "feature"
+      - name: Delete all releases and tags
+        working-directory: example
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: >
+          gh
+          release
+          list
+          --exclude-drafts
+          |
+          awk
+          -F
+          '\t'
+          '{print $3}'
+          |
+          while
+          read
+          -r
+          tag
+          ;
+          do
+          gh
+          release
+          delete
+          "$tag"
+          --yes
+          --cleanup-tag
+          ;
+          done
+      - name: Merge pull request
+        working-directory: example
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: >
+          gh
+          pr
+          merge
+          --auto
+          --delete-branch
+          --squash
+      - name: Fetch changes from origin
+        working-directory: example
+        run: >
+          git
+          fetch
+          --prune
+          --prune-tags
+          origin
+      - name: Create release
+        working-directory: example
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: >
+          gh
+          release
+          create
+          0.1.0
+          --generate-notes

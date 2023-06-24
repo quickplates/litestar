@@ -1,0 +1,6 @@
+# Generic, formatter-friendly config.
+# See https://beta.ruff.rs/docs/rules
+select = ["F", "E", "W", "I", "N", "UP", "B", "PT", "TRY", "FLY"]
+
+# Never enforce `E501` (line length violations). This should be handled by formatters.
+ignore = ["E501"]

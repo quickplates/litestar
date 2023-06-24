@@ -1,0 +1,45 @@
+---
+# Questions
+
+username:
+  type: str
+  help: Your GitHub username
+
+email:
+  type: str
+  help: Your email address
+
+projectname:
+  type: str
+  help: The name of your project
+
+importname:
+  type: str
+  help: The name you will use to import your package in Python code
+  default: "{{ projectname | lower | replace('-', '_') }}"
+
+description:
+  type: str
+  help: A short description of your project
+
+docs:
+  type: bool
+  help: Whether to include a documentation site for your project
+  default: true
+
+docsurl:
+  type: str
+  help: The URL of the documentation site for your project
+  default: "https://{{ username }}.github.io/{{ projectname }}"
+  when: "{{ docs }}"
+
+registry:
+  type: bool
+  help: Whether you want to publish Docker images to a GitHub Container Registry
+  default: true
+  when: "{{ executable }}"
+
+# Configuration
+
+_subdirectory: src
+_answers_file: .copier-answers.yaml
