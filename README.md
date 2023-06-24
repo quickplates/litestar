@@ -1,0 +1,2 @@
+# litestar
+Litestar project template 💫
