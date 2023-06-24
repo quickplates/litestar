@@ -1,0 +1,31 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "docs": "docusaurus",
+    "update": "ncu --peer --doctor --upgrade && npm i --no-audit --no-fund",
+    "postupdate": "rm -rf .tmp/",
+    "test": "docusaurus build --out-dir .tmp/",
+    "posttest": "rm -rf .tmp/"
+  },
+  "dependencies": {
+    "@docusaurus/core": "2.4.1",
+    "@docusaurus/preset-classic": "2.4.1",
+    "@mdx-js/react": "^1.6.22",
+    "clsx": "^1.2.1",
+    "npm-check-updates": "^16.10.12",
+    "prism-react-renderer": "^1.3.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "start": "^5.1.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "2.4.1",
+    "@tsconfig/docusaurus": "^1.0.7",
+    "typescript": "^5.0.4"
+  },
+  "engines": {
+    "node": ">=16.14"
+  }
+}

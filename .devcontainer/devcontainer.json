@@ -1,0 +1,116 @@
+{
+  // The Compose file to use
+  "dockerComposeFile": "docker-compose.yaml",
+  // The service that will be used by all tools
+  "service": "dev",
+  // Where the source code is located in the container
+  "workspaceFolder": "/workspace",
+  // The user to be used by all tools
+  "remoteUser": "vscode",
+  // The user to be used by all other processes
+  "containerUser": "vscode",
+  // Override the default command to keep the container running
+  "overrideCommand": true,
+  // Extra features to install to the container
+  // Pin feature versions to ensure reproducibility
+  "features": {
+    // Install Nix
+    "ghcr.io/devcontainers/features/nix:1.1.3": {
+      // Pin version to ensure reproducibility
+      "version": "2.15.1",
+      // Multi-user mode is the best in this case
+      "multiUser": true,
+      // Enable experimental features
+      "extraNixConfig": "experimental-features = nix-command flakes"
+    },
+    // Install Direnv
+    "ghcr.io/devcontainers-contrib/features/gh-release:1.0.17": {
+      "repo": "direnv/direnv",
+      "binaryNames": "direnv",
+      // Pin version to ensure reproducibility
+      "version": "2.32.3"
+    },
+    // Install Starship
+    "ghcr.io/devcontainers-contrib/features/starship:1.0.6": {
+      // Pin version to ensure reproducibility
+      "version": "1.14.2"
+    },
+    // Enable using Docker from within the container
+    "ghcr.io/devcontainers/features/docker-in-docker:2.2.0": {
+      // Pin Engine version to ensure reproducibility
+      "version": "20.10.25",
+      // Use the Moby engine instead of Docker CE
+      "moby": true,
+      // Use Docker Compose v2
+      "dockerDashComposeVersion": "v2",
+      // Enable BuildKit
+      "installDockerBuildx": true
+    }
+  },
+  // Run a command when the container is created
+  "onCreateCommand": "./.devcontainer/setup.sh",
+  // Run a command when the content is updated
+  "updateContentCommand": "./.devcontainer/update.sh",
+  // Tool-specific settings
+  "customizations": {
+    // VS Code settings
+    "vscode": {
+      // Extensions to install
+      "extensions": [
+        // Direnv
+        "mkhl.direnv",
+        // Task
+        "task.vscode-task",
+        // Trunk
+        "Trunk.io",
+        // Ignore files
+        "Syler.ignore",
+        // Nix
+        "jnoortheen.nix-ide",
+        // Improved Markdown preview
+        "bierner.github-markdown-preview",
+        // SVG preview
+        "jock.svg",
+        // Jinja templates
+        "samuelcolvin.jinjahtml",
+        // Python for tests
+        "ms-python.python",
+        // TOML
+        "tamasfe.even-better-toml",
+        // GitLens
+        "eamodio.gitlens",
+        // GitHub Copilot
+        "GitHub.copilot"
+      ],
+      // Settings to override
+      "settings": {
+        // Set Trunk as the default formatter
+        "editor.defaultFormatter": "trunk.io",
+        // Enable GitHub Copilot for all languages
+        // For some reason, wildcard alone is not enough
+        "github.copilot.enable": {
+          "*": true,
+          "plaintext": true,
+          "markdown": true,
+          "scminput": true
+        },
+        // Use LSP for Nix
+        "nix.enableLanguageServer": true,
+        // Use nil as the language server
+        "nix.serverPath": "nil",
+        "nix.serverSettings": {
+          "nil": {
+            "formatting": {
+              // Use 'nix fmt' for formatting
+              "command": ["nix", "fmt", "--", "-"]
+            }
+          }
+        },
+        // Use Nix IDE instead of Trunk for Nix files
+        "[nix]": {
+          "editor.defaultFormatter": "jnoortheen.nix-ide"
+        }
+      }
+    }
+  }
+}

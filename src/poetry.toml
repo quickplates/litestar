@@ -1,0 +1,3 @@
+[virtualenvs]
+# Use venv in project directory
+in-project = true

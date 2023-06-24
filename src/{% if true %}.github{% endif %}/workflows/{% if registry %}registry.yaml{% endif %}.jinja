@@ -1,0 +1,47 @@
+---
+name: Registry
+
+# Put 'on' in quotes to avoid YAML parsing error
+"on":
+  # Run on new releases
+  release:
+    types:
+      - published
+
+jobs:
+  registry:
+    name: Publish Docker image to GitHub registry
+    # Pin version of Ubuntu to avoid breaking changes
+    runs-on: ubuntu-22.04
+    # Use reasonable timeout to avoid stuck workflows
+    timeout-minutes: 5
+    permissions:
+      # Needed to checkout code
+      contents: read
+      # Needed to push to registry
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.7.0
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2.2.0
+        with:
+          registry: ghcr.io
+          username: {{ '${{ github.actor }}' }}
+          password: {{ '${{ secrets.GITHUB_TOKEN }}' }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          push: true
+          # Slashes are here to make the string multiline and avoid using spaces
+          tags: "\
+            ghcr.io/{{ username }}/{{ projectname }}\
+            :latest,\
+            ghcr.io/{{ username }}/{{ projectname }}\
+            :{{ '${{ github.event.release.tag_name }}' }}"
+          # Cache Docker layers between builds
+          cache-from: {{ 'type=gha, scope=${{ github.workflow }}' }}
+          cache-to: {{ 'type=gha, mode=max, scope=${{ github.workflow }}' }}

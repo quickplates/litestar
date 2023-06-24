@@ -1,0 +1,156 @@
+---
+version: "3"
+
+tasks:
+  template:
+    desc: Fetch template updates
+    interactive: true
+    env:
+      GIT_CONFIG_COUNT: 1
+      GIT_CONFIG_KEY_0: commit.gpgsign
+      GIT_CONFIG_VALUE_0: false
+    cmds:
+      - >
+        copier
+        update
+        --answers-file
+        .copier-answers.yaml
+        {{ .CLI_ARGS }}
+  flake:
+    desc: Update flake.lock
+    cmds:
+      - >
+        nix
+        --accept-flake-config
+        --extra-experimental-features 'nix-command flakes'
+        --no-warn-dirty
+        flake
+        update
+        {{ .CLI_ARGS }}
+  fmt:
+    desc: Format files
+    cmds:
+      - >
+        trunk
+        fmt
+        {{ .CLI_ARGS }}
+  lint:
+    desc: Lint files
+    cmds:
+      - >
+        trunk
+        check
+        {{ .CLI_ARGS }}
+  clean:
+    desc: Clean build files
+    cmds:
+      - >
+        rm
+        --recursive
+        --force
+        {{ .CLI_ARGS }}
+        ./build/
+    status:
+      - >
+        test
+        '!'
+        -d
+        ./build/
+  shallow-build:
+    desc: Build the project without initializing git
+    env:
+      GIT_CONFIG_COUNT: 1
+      GIT_CONFIG_KEY_0: commit.gpgsign
+      GIT_CONFIG_VALUE_0: false
+    sources:
+      - ./src/**/*
+      - ./.gitignore
+      - ./copier.yaml
+      - ./flake.lock
+      - ./*.nix
+      - ./Taskfile.dist.{yaml,yml}
+      - ./{taskfile,Taskfile}.{yaml,yml}
+    generates:
+      - ./build/**/*
+    cmds:
+      - task: clean
+        vars:
+          CLI_ARGS: ""
+      - >
+        copier
+        copy
+        --overwrite
+        --defaults
+        --vcs-ref HEAD
+        --data 'username=quickplates'
+        --data 'email=quickplates@mail.spietras.dev'
+        --data 'projectname=litestar-example'
+        --data 'description=Litestar project example 🌠'
+        {{ .CLI_ARGS }}
+        ./
+        ./build/
+  init-build:
+    desc: Initialize git in the build directory
+    internal: true
+    env:
+      GIT_CONFIG_GLOBAL: ""
+      GIT_CONFIG_SYSTEM: ""
+    dir: build
+    cmds:
+      - >
+        git
+        init
+        --initial-branch
+        main
+        --quiet
+      - >
+        git
+        config
+        --local
+        user.name
+        'quickplates'
+      - >
+        git
+        config
+        --local
+        user.email
+        'quickplates <quickplates@mail.spietras.dev>'
+      - >
+        git
+        commit
+        --allow-empty
+        --message
+        'Initial commit'
+        --quiet
+    status:
+      - >
+        test
+        -d
+        ./.git/
+  add-build-changes:
+    desc: Add build changes to git
+    internal: true
+    dir: build
+    cmds:
+      - >
+        git
+        add
+        --all
+    status:
+      - >
+        test
+        -z
+        "$(git ls-files --others --exclude-standard)"
+  build:
+    desc: Build the project
+    cmds:
+      - task: shallow-build
+      - task: init-build
+      - task: add-build-changes
+  test:
+    desc: Test the project
+    dir: tests
+    cmds:
+      - >
+        pytest
+        {{ .CLI_ARGS }}

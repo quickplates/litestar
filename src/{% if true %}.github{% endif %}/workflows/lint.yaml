@@ -1,0 +1,104 @@
+---
+name: Lint
+
+# Put 'on' in quotes to avoid YAML parsing error
+"on":
+  # Enable manual triggering
+  workflow_dispatch: {}
+  # Run on commits to main branch
+  push:
+    branches:
+      - main
+  # Run also on pull requests to main branch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Lint
+    # Pin version of Ubuntu to avoid breaking changes
+    runs-on: ubuntu-22.04
+    # Use reasonable timeout to avoid stuck workflows
+    timeout-minutes: 5
+    env:
+      NIX_CACHE_DIR: /home/runner/.nixcache
+      TRUNK_CACHE_DIR: /home/runner/.trunkcache
+    permissions:
+      # Needed to checkout code
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.2
+      # We need to fetch upstream so Trunk can compare against it
+      - name: Fetch upstream
+        if: github.event_name == 'pull_request'
+        run: >
+          git
+          fetch
+          origin
+          ${{ github.event.pull_request.base.ref }}
+      - name: Setup Nix cache
+        uses: actions/cache@v3.3.1
+        id: cache-nix
+        with:
+          path: ${{ env.NIX_CACHE_DIR }}
+          key: lint-nix
+      - name: Setup Trunk cache
+        uses: actions/cache@v3.3.1
+        with:
+          path: ${{ env.TRUNK_CACHE_DIR }}
+          key: lint-trunk
+      - name: Install Nix
+        uses: cachix/install-nix-action@v21
+        with:
+          github_access_token: ${{ github.token }}
+          install_url: https://releases.nixos.org/nix/nix-2.15.1/install
+      # See: https://github.com/cachix/install-nix-action/issues/56
+      - name: Import Nix store cache
+        if: steps.cache-nix.outputs.cache-hit == 'true'
+        run: >
+          nix-store
+          --import
+          < ${{ env.NIX_CACHE_DIR }}/archive.nar
+      - name: Trunk Check
+        if: github.event_name == 'pull_request'
+        env:
+          TRUNK_CACHE: ${{ env.TRUNK_CACHE_DIR }}
+        run: >
+          nix
+          develop
+          .#lint
+          --command
+          --
+          task
+          lint
+          --
+          --ci
+          --upstream
+          ${{ github.event.pull_request.base.sha }}
+      - name: Trunk Check
+        if: github.event_name != 'pull_request'
+        env:
+          TRUNK_CACHE: ${{ env.TRUNK_CACHE_DIR }}
+        run: >
+          nix
+          develop
+          .#lint
+          --command
+          --
+          task
+          lint
+          --
+          --ci
+      # See: https://github.com/cachix/install-nix-action/issues/56
+      - name: Export Nix store cache
+        if: "!cancelled()"
+        run: >
+          mkdir
+          -p
+          ${{ env.NIX_CACHE_DIR }}
+          &&
+          nix-store
+          --export $(find /nix/store -maxdepth 1 -name '*-*')
+          > ${{ env.NIX_CACHE_DIR }}/archive.nar
