@@ -10,15 +10,25 @@ documentation = "{{ docsurl }}"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-# Pydantic and OmegaConf are used for configuration
+# Pydantic is used to define data models
 pydantic = { version = "^1.10", extras = ["dotenv"] }
+# OmegaConf is used to load configuration
 omegaconf = "^2.3"
-# Typer and Rich make it easy to build CLI apps
+# Typer and Rich are used to build CLIs
 typer = { version = "^0.9", extras = ["all"] }
 rich = "^13.4"
+# Litestar and Uvicorn are used to build async APIs
+litestar = "^2.0.0b1"
+uvicorn = { version = "^0.22", extras = ["standard"] }
+# pyhumps is used to convert between different case styles
+pyhumps = "^3.8"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7"
+pytest-asyncio = "^0.21"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 
 [tool.poetry.scripts]
 # Register CLI
