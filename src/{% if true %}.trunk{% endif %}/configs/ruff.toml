@@ -6,3 +6,6 @@ select = ["F", "E", "W", "I", "N", "UP", "B", "PT", "TRY", "FLY"]
 # Allow `B008` (function calls in argument defaults) and `UP007` (old-style type annotations).
 # This is a common pattern in some frameworks.
 ignore = ["E501", "B008", "UP007"]
+
+# Allow imports relative to the "src" and "test" directories.
+src = ["src", "test"]

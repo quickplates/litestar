@@ -46,6 +46,8 @@
         copier = pkgs.copier;
         tini = pkgs.tini;
         su-exec = pkgs.su-exec;
+        curl = pkgs.curl;
+        curlie = pkgs.curlie;
       in {
         # Override pkgs argument
         _module.args.pkgs = import inputs.nixpkgs {
@@ -78,6 +80,8 @@
               trunk
               poetry
               copier
+              curl
+              curlie
             ];
 
             shellHook = ''

@@ -37,7 +37,6 @@ registry:
   type: bool
   help: Whether you want to publish Docker images to a GitHub Container Registry
   default: true
-  when: "{{ executable }}"
 
 # Configuration
 

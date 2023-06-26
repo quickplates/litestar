@@ -24,4 +24,5 @@ class BaseConfig(BaseSettings):
             env_settings: SettingsSourceCallable,
             file_secret_settings: SettingsSourceCallable,
         ) -> tuple[SettingsSourceCallable, ...]:
+            # Define the order of settings sources
             return env_settings, init_settings, file_secret_settings

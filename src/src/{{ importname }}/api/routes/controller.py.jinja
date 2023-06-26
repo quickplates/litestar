@@ -1,0 +1,17 @@
+from litestar import Controller as BaseController
+from litestar import Response, get
+
+from {{ importname }}.api.routes.models import GetResponse
+from {{ importname }}.foo import foo
+
+
+class Controller(BaseController):
+    """Root controller."""
+
+    @get(
+        summary="GET example",
+        description="Example endpoint that showcases a GET request",
+    )
+    async def get(self) -> Response[GetResponse]:
+        content = GetResponse(foo=foo())
+        return Response(content)

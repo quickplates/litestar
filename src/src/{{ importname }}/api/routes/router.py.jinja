@@ -1,0 +1,10 @@
+from litestar import Router
+
+from {{ importname }}.api.routes.controller import Controller as RootController
+
+router = Router(
+    path="/",
+    route_handlers=[
+        RootController,
+    ],
+)
