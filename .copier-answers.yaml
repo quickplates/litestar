@@ -1,6 +1,6 @@
 ---
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 0.3.2
+_commit: 0.3.3
 _src_path: gh:quickplates/meta
 description: Litestar project template 🌠
 projectname: litestar

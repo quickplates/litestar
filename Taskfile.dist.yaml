@@ -149,8 +149,8 @@ tasks:
       - task: add-build-changes
   test:
     desc: Test the project
-    dir: tests
     cmds:
       - >
         pytest
+        tests
         {{ .CLI_ARGS }}

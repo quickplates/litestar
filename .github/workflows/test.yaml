@@ -12,10 +12,11 @@ name: Test
     # Run only on changes to files relevant to tests
     paths:
       - "copier.yaml"
-      - "flake.nix"
+      - "*.nix"
       - "flake.lock"
       - "src/**"
       - "tests/**"
+      - "pytest.ini"
       - "Taskfile.dist.yaml"
       - ".github/workflows/test.yaml"
   # Run also on pull requests to main branch
@@ -25,10 +26,11 @@ name: Test
     # Run only on changes to files relevant to tests
     paths:
       - "copier.yaml"
-      - "flake.nix"
+      - "*.nix"
       - "flake.lock"
       - "src/**"
       - "tests/**"
+      - "pytest.ini"
       - "Taskfile.dist.yaml"
       - ".github/workflows/test.yaml"
 

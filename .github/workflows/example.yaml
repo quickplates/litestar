@@ -18,7 +18,7 @@ concurrency:
     # Run only on changes to relevant files
     paths:
       - "copier.yaml"
-      - "flake.nix"
+      - "*.nix"
       - "flake.lock"
       - "src/**"
       - "Taskfile.dist.yaml"

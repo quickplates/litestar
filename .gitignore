@@ -12,3 +12,9 @@
 
 # Build
 /build
+
+# Tests
+__pycache__
+*.py[cod]
+*$py.class
+.pytest_cache
