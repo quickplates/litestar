@@ -17,7 +17,11 @@ concurrency:
       - main
     # Run only if there are changes in docs/ or workflow file
     paths:
+      - "copier.yaml"
+      - "*.nix"
+      - "flake.lock"
       - "docs/**"
+      - "Taskfile.dist.yaml"
       - ".github/workflows/docs.yaml"
 
 jobs:
