@@ -245,30 +245,15 @@ tasks:
         &&
         {{ projectname }}
         {{ '{{ .CLI_ARGS }}' }}
-  docker-build:
-    desc: Build docker image
-    cmds:
-      - >
-        docker
-        build
-        --tag
-        {{ projectname }}
-        {{ '{{ .CLI_ARGS }}' }}
-        .
   docker:
-    desc: Run docker image
+    desc: Run in docker container
     interactive: true
     cmds:
-      - task: docker-build
-        vars:
-          CLI_ARGS: ""
       - >
         docker
-        run
-        --rm
-        --interactive
-        --tty
-        --network
-        host
-        {{ projectname }}
+        compose
+        up
+        --build
+        --force-recreate
+        --remove-orphans
         {{ '{{ .CLI_ARGS }}' }}
