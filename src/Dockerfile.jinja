@@ -10,28 +10,16 @@ WORKDIR /env/
 # Copy Nix files
 COPY *.nix flake.lock ./
 
+# Copy env script
+COPY ./scripts/env.sh ./scripts/env.sh
+
 # Build runtime shell closure and activation script
 RUN \
     # Mount cached store paths
     --mount=type=cache,target=/nix-store-cache \
     # Mount Nix evaluation cache
     --mount=type=cache,target=/root/.cache/nix \
-    # Import cached store if available
-    (if [ -f /nix-store-cache/archive.nar ]; then nix-store --import < /nix-store-cache/archive.nar; fi) && \
-    # We need to create necessary directories first
-    mkdir -p ./build/closure && \
-    # Save system to variable so we can reuse it easily
-    export _SYSTEM=$(nix eval --impure --raw --expr 'builtins.currentSystem') && \
-    # This will build the runtime shell and all its dependencies
-    nix build --no-link .#devShells.$_SYSTEM.runtime && \
-    # Save all paths needed for runtime shell to a file
-    nix path-info --quiet --quiet --quiet --quiet --quiet --recursive .#devShells.$_SYSTEM.runtime > ./build/paths && \
-    # Copy all paths to a separate directory
-    cp --recursive $(cat ./build/paths) ./build/closure && \
-    # Generate activation script for runtime shell and copy it
-    nix print-dev-env .#devShells.$_SYSTEM.runtime > ./build/activate && \
-    # Save all paths needed for runtime shell to cache
-    nix-store --export $(cat ./build/paths) > /nix-store-cache/archive.nar
+    ./scripts/env.sh runtime ./build /nix-store-cache
 
 # Ubuntu is probably the safest choice for a runtime container right now
 FROM ubuntu:23.04

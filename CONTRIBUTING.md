@@ -98,7 +98,8 @@ Here are the most common ones, using `Task`:
 - `task lint` - Run linting on all changed files
 
 Linting is automatically run on every pull request and push to the `main` branch.
-You can find the GitHub Actions workflow that does this in `.github/workflows/lint.yml`.
+You can find the GitHub Actions workflow that does this in
+[`.github/workflows/lint.yaml`](https://github.com/quickplates/litestar/blob/main/.github/workflows/lint.yaml).
 
 If you use the Dev Container setup,
 you will have the `Trunk` extension installed in Visual Studio Code.
@@ -115,3 +116,7 @@ To run all tests, you can run:
 ```sh
 task test
 ```
+
+Testing is automatically run on every pull request and push to the `main` branch.
+You can find the GitHub Actions workflow that does this in
+[`.github/workflows/test.yaml`](https://github.com/quickplates/litestar/blob/main/.github/workflows/test.yaml).

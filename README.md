@@ -43,16 +43,16 @@ copier gh:quickplates/litestar .
 - pleasant command line interfaces with [`Typer`](https://typer.tiangolo.com)
   and [`Rich`](https://rich.readthedocs.io)
 - optimized custom [`Docker`](https://www.docker.com) images
-- automatic releases on `GitHub Container Registry`
+- automatic releases on [`GitHub Container Registry`](https://ghcr.io)
 - running tasks with [`Task`](https://taskfile.dev)
 - formatting and linting with [`Trunk`](https://trunk.io)
 - easy to write and nice looking documentation
   with [`Docusaurus`](https://docusaurus.io)
 - continuous integration with [`GitHub Actions`](https://github.com/features/actions)
 
-## 💻 Contributing and Development
+## 💻 Development
 
-Read more about how to contribute and develop the project
+Read more about how to develop the project
 [here](https://github.com/quickplates/litestar/blob/main/CONTRIBUTING.md).
 
 If you have any ideas on how to improve this template,

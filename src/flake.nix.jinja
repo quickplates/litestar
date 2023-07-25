@@ -35,18 +35,18 @@
         system,
         ...
       }: let
-        python = pkgs.python311;
         {%- if docs %}
         node = pkgs.nodejs;
         {%- endif %}
+        python = pkgs.python311;
         nil = pkgs.nil;
         task = pkgs.go-task;
         trunk = pkgs.trunk-io;
         poetry = pkgs.poetry;
-        copier = pkgs.copier;
+        # Build copier manually, because the nixpkgs version is outdated
+        copier = pkgs.callPackage ./copier.nix {};
         tini = pkgs.tini;
         su-exec = pkgs.su-exec;
-        curl = pkgs.curl;
         curlie = pkgs.curlie;
       in {
         # Override pkgs argument
@@ -71,16 +71,15 @@
             name = "dev";
 
             packages = [
-              python
               {%- if docs %}
               node
               {%- endif %}
+              python
               nil
               task
               trunk
               poetry
               copier
-              curl
               curlie
             ];
 
@@ -129,6 +128,9 @@
             name = "lint";
 
             packages = [
+              {%- if docs %}
+              node
+              {%- endif %}
               task
               trunk
             ];

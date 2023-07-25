@@ -11,12 +11,12 @@ name: Test
       - main
     # Run only on changes to files relevant to tests
     paths:
+      - "src/**"
+      - "tests/**"
       - "*.nix"
       - "flake.lock"
       - "pyproject.toml"
       - "poetry.lock"
-      - "src/**"
-      - "tests/**"
       - "Taskfile.dist.yaml"
       - ".github/workflows/test.yaml"
   # Run also on pull requests to main branch
@@ -25,12 +25,12 @@ name: Test
       - main
     # Run only on changes to files relevant to tests
     paths:
+      - "src/**"
+      - "tests/**"
       - "*.nix"
       - "flake.lock"
       - "pyproject.toml"
       - "poetry.lock"
-      - "src/**"
-      - "tests/**"
       - "Taskfile.dist.yaml"
       - ".github/workflows/test.yaml"
 

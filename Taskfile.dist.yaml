@@ -108,13 +108,13 @@ tasks:
         config
         --local
         user.name
-        'quickplates'
+        'test'
       - >
         git
         config
         --local
         user.email
-        'quickplates <quickplates@mail.spietras.dev>'
+        'test@example.org'
       - >
         git
         commit

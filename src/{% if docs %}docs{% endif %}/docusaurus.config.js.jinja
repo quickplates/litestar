@@ -6,7 +6,7 @@ const url = new URL("{{ docsurl }}");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "{{ projectname }} docs",
-  favicon: "favicon.ico",
+  favicon: "favicon.ico?v=1",
 
   url: `${url.protocol}//${url.host}`,
   baseUrl: url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`,
@@ -47,7 +47,7 @@ const config = {
         title: "{{ projectname }} docs",
         logo: {
           alt: "{{ projectname }} docs logo",
-          src: "logo.svg",
+          src: "logo.svg?v=1",
         },
         items: [
           {

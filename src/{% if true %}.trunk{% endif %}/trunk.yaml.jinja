@@ -29,12 +29,16 @@ lint:
       run_when: [ci, cli]
       commands:
         - output: pass_fail
+          read_output_from: stderr
           run: >-
             nix
+            --accept-flake-config
             --extra-experimental-features 'nix-command flakes'
+            --no-warn-dirty
             fmt
             --
-            --check path://${target}
+            --check
+            path://${workspace}/${target}
           success_codes: [0, 1]
     # Nix flake check (local)
     - name: nix-flake-check
@@ -42,9 +46,13 @@ lint:
       run_when: [ci, cli]
       commands:
         - output: pass_fail
+          target: .
+          read_output_from: stderr
           run: >-
             nix
+            --accept-flake-config
             --extra-experimental-features 'nix-command flakes'
+            --no-warn-dirty
             flake
             check
             path://${workspace}
@@ -69,6 +77,12 @@ lint:
     - shfmt@3.5.0
     # GitHub Actions linting
     - actionlint@1.6.24
+    {%- if docs %}
+    # SVG formatting
+    - svgo@3.0.2
+    # JavaScript linting
+    - eslint@8.41.0
+    {%- endif %}
     # Python formatting
     - black@23.3.0
     - isort@5.12.0
@@ -76,12 +90,6 @@ lint:
     - ruff@0.0.270
     # TOML
     - taplo@0.8.0
-    {%- if docs %}
-    # SVG formatting
-    - svgo@3.0.2
-    # JavaScript linting
-    - eslint@8.41.0
-    {%- endif %}
     # Nix formatting check
     - nix-fmt-check@SYSTEM
     # Nix flake check
