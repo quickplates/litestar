@@ -9,7 +9,7 @@ class BaseConfig(BaseSettings):
         """Pydantic configuration."""
 
         # Environment variables prefix
-        env_prefix = "{{ importname }}_"
+        env_prefix = "{{ envprefix }}_"
         # Delimiter for nested models in environment variables
         env_nested_delimiter = "__"
         # Use dotenv file if present

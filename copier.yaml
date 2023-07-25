@@ -11,16 +11,21 @@ email:
 
 projectname:
   type: str
-  help: The name of your project
+  help: The name of the project
 
 importname:
   type: str
   help: The name you will use to import your package in Python code
   default: "{{ projectname | lower | replace('-', '_') }}"
 
+envprefix:
+  type: str
+  help: The prefix for environment variables
+  default: "{{ projectname | upper | replace('-', '_') }}"
+
 description:
   type: str
-  help: A short description of your project
+  help: A short description of the project
 
 docs:
   type: bool
@@ -33,10 +38,16 @@ docsurl:
   default: "https://{{ username }}.github.io/{{ projectname }}"
   when: "{{ docs }}"
 
+releases:
+  type: bool
+  help: Whether you plan to make releases
+  default: true
+
 registry:
   type: bool
   help: Whether you want to publish Docker images to a GitHub Container Registry
   default: true
+  when: "{{ releases }}"
 
 # Configuration
 

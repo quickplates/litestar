@@ -17,10 +17,10 @@ concurrency:
       - main
     # Run only on changes to relevant files
     paths:
+      - "src/**"
       - "copier.yaml"
       - "*.nix"
       - "flake.lock"
-      - "src/**"
       - "Taskfile.dist.yaml"
       - ".github/workflows/example.yaml"
 

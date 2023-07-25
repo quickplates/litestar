@@ -29,6 +29,8 @@
     "*.py*endif*.jinja": "jinja-py",
     "Dockerfile*.jinja": "jinja-dockerfile",
     "Dockerfile*endif*.jinja": "jinja-dockerfile",
+    ".json.jinja": "jinja-json",
+    ".json*endif*.jinja": "jinja-json",
     "*_copier_conf.answers_file*.jinja": "jinja-yaml",
     "*.html?? endif ??": "html",
     "*.{js,cjs,mjs}?? endif ??": "javascript",

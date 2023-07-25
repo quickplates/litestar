@@ -11,7 +11,7 @@ runtimes:
   enabled:
     # Needed for gitleaks, shfmt, actionlint
     - go@1.19.5
-    # Needed for prettier, markdownlint, svgo, eslint
+    # Needed for prettier, markdownlint, svgo
     - node@18.12.1
     # Needed for yamllint, black, ruff
     - python@3.10.8
@@ -23,7 +23,6 @@ lint:
         - "**/*.jinja"
         # Ignore copier answers file
         - "**/.copier-answers.yaml"
-        - "**/.copier-answers.yml"
     - linters: [ruff]
       paths:
         # Ignore source files
@@ -85,8 +84,6 @@ lint:
     - actionlint@1.6.24
     # SVG formatting
     - svgo@3.0.2
-    # JavaScript linting
-    - eslint@8.41.0
     # Python formatting
     - black@23.3.0
     - isort@5.12.0

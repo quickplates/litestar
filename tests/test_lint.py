@@ -15,10 +15,11 @@ def data() -> dict[str, str]:
         "email": "quickplates@mail.spietras.dev",
         "projectname": "litestar-example",
         "importname": "litestar_example",
+        "envprefix": "LITESTAR_EXAMPLE",
         "description": "Litestar project example 🌠",
-        "repository": "https://github.com/quickplates/litestar-example",
         "docs": "true",
         "docsurl": "https://quickplates.github.io/litestar-example",
+        "releases": "true",
         "registry": "true",
     }
 
@@ -49,7 +50,7 @@ def copied_template_directory(
 
 
 def test_lint(copied_template_directory: Path) -> None:
-    """Test that the template can be linted without errors."""
+    """Test that the project can be linted without errors."""
 
     with CWD(copied_template_directory):
         local.cmd.nix(

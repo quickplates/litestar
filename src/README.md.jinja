@@ -6,6 +6,10 @@
 
 [![Lint](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/lint.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/lint.yaml)
 [![Test](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/test.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/test.yaml)
+[![Image](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/image.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/image.yaml)
+{%- if registry %}
+[![Registry](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/registry.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/registry.yaml)
+{%- endif %}
 {%- if docs %}
 [![Docs](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/docs.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/docs.yaml)
 {%- endif %}
@@ -30,5 +34,5 @@ More in-depth documentation can be found
 
 ## 💻 Development
 
-Read more about how to contribute and develop the project
+Read more about how to develop the project
 [here](https://github.com/{{ username }}/{{ projectname }}/blob/main/CONTRIBUTING.md).
