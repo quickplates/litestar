@@ -1,38 +1,35 @@
 [tool.poetry]
-name = "{{ projectname }}"
+name = "{{ appname }}"
 version = "0.1.0"
 description = "{{ description }}"
-license = "MIT"
-authors = ["{{ username }} <{{ email }}>"]
-readme = "README.md"
-repository = "https://github.com/{{ username }}/{{ projectname }}"
-documentation = "{{ docsurl }}"
+authors = ["{{ accountname }} <{{ email }}>"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 # Pydantic is used to define data models
-pydantic = { version = "^1.10", extras = ["dotenv"] }
+pydantic = "^2.5"
+pydantic-settings = "^2.1"
 # OmegaConf is used to load configuration
 omegaconf = "^2.3"
 # Typer and Rich are used to build CLIs
 typer = { version = "^0.9", extras = ["all"] }
-rich = "^13.4"
+rich = "^13.7"
 # Litestar and Uvicorn are used to build async APIs
-litestar = "^2.0.0b1"
-uvicorn = { version = "^0.22", extras = ["standard"] }
-# pyhumps is used to convert between different case styles
-pyhumps = "^3.8"
+litestar = "^2.5"
+uvicorn = { version = "^0.27", extras = ["standard"] }
+# For correct handling of timezones
+tzdata = "*"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7"
-pytest-asyncio = "^0.21"
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
+pytest = "^7.4"
+# Asyncio support for pytest
+pytest-asyncio = "^0.23"
+# Running dependent services in containers
+testcontainers = "^3.7"
 
 [tool.poetry.scripts]
 # Register CLI
-{{ projectname }} = "{{ importname }}.__main__:cli"
+{{ appname }} = "{{ importname }}.__main__:cli"
 
 # See: https://python-poetry.org/docs/pyproject/#poetry-and-pep-517
 [build-system]

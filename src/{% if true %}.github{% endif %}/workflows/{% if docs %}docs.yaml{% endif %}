@@ -1,4 +1,3 @@
----
 name: Docs
 
 # Only one workflow can run at a time
@@ -15,14 +14,13 @@ concurrency:
   push:
     branches:
       - main
-    # Run only if there are changes in docs/ or workflow file
+    # Run only on changes to relevant files
     paths:
-      - "docs/**"
-      - "copier.yaml"
+      - .github/workflows/docs.yaml
+      - docs/**
+      - flake.lock
       - "*.nix"
-      - "flake.lock"
-      - "Taskfile.dist.yaml"
-      - ".github/workflows/docs.yaml"
+      - Taskfile.dist.yaml
 
 jobs:
   build:
@@ -30,9 +28,9 @@ jobs:
     # Pin version of Ubuntu to avoid breaking changes
     runs-on: ubuntu-22.04
     # Use reasonable timeout to avoid stuck workflows
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
-      NIX_CACHE_DIR: /home/runner/.nixcache
+      NIX_CACHE_DIR: /home/runner/.nixcache/
     permissions:
       # Needed to checkout code
       contents: read
@@ -40,23 +38,23 @@ jobs:
       pages: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v4.1.1
       - name: Setup Nix cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v4.0.0
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: docs-nix
       - name: Setup docs modules cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v4.0.0
         with:
-          path: docs/node_modules
+          path: docs/node_modules/
           key: docs-modules
       - name: Install Nix
-        uses: cachix/install-nix-action@v21
+        uses: cachix/install-nix-action@v25
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.15.1/install
+          install_url: https://releases.nixos.org/nix/nix-2.19.3/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
@@ -68,7 +66,7 @@ jobs:
         run: >
           nix
           develop
-          .#docs
+          ./#docs
           --command
           --
           task
@@ -76,13 +74,13 @@ jobs:
           --
           build
           --out-dir
-          build
+          build/
       - name: Setup Pages
-        uses: actions/configure-pages@v3.0.6
+        uses: actions/configure-pages@v4.0.0
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1.0.8
+        uses: actions/upload-pages-artifact@v3.0.0
         with:
-          path: docs/build
+          path: docs/build/
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Export Nix store cache
         if: "!cancelled()"
@@ -92,7 +90,7 @@ jobs:
           ${{ env.NIX_CACHE_DIR }}
           &&
           nix-store
-          --export $(find /nix/store -maxdepth 1 -name '*-*')
+          --export $(find /nix/store/ -maxdepth 1 -name '*-*')
           > ${{ env.NIX_CACHE_DIR }}/archive.nar
   deploy:
     name: Deploy docs
@@ -101,7 +99,7 @@ jobs:
     # Pin version of Ubuntu to avoid breaking changes
     runs-on: ubuntu-22.04
     # Use reasonable timeout to avoid stuck workflows
-    timeout-minutes: 5
+    timeout-minutes: 10
     # Use Pages environment
     environment:
       name: github-pages
@@ -114,4 +112,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2.0.1
+        uses: actions/deploy-pages@v4.0.3

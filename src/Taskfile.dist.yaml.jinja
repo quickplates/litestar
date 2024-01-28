@@ -1,4 +1,3 @@
----
 version: "3"
 
 tasks:
@@ -6,9 +5,9 @@ tasks:
     desc: Fetch template updates
     interactive: true
     env:
-      GIT_CONFIG_COUNT: 1
-      GIT_CONFIG_KEY_0: commit.gpgsign
-      GIT_CONFIG_VALUE_0: false
+      GIT_CONFIG_GLOBAL: ""
+      GIT_CONFIG_SYSTEM: ""
+      PYTHONPATH: ""
     cmds:
       - >
         copier
@@ -22,7 +21,8 @@ tasks:
       - >
         nix
         --accept-flake-config
-        --extra-experimental-features 'nix-command flakes'
+        --extra-experimental-features
+        'nix-command flakes'
         --no-warn-dirty
         flake
         update
@@ -50,31 +50,31 @@ tasks:
   {%- if docs %}
   remove-docs-node-modules:
     desc: Clean docs node_modules
-    dir: docs
+    dir: docs/
     cmds:
       - >
         rm
         --recursive
         --force
-        ./node_modules/
+        node_modules/
     status:
       - >
         test
         '!'
         -d
-        ./node_modules/
+        node_modules/
   install-docs:
     desc: Install docs dependencies
-    dir: docs
+    dir: docs/
     sources:
-      - ./package.json
-      - ./package-lock.json
+      - package-lock.json
+      - package.json
       - ../flake.lock
       - ../*.nix
-      - ../Taskfile.dist.{yaml,yml}
+      - ../Taskfile.dist.yaml
       - ../{taskfile,Taskfile}.{yaml,yml}
     generates:
-      - ./node_modules/**/*
+      - node_modules/**/*
     cmds:
       - >
         npm
@@ -83,7 +83,7 @@ tasks:
   install-docs-internal:
     desc: Install docs dependencies quietly
     internal: true
-    dir: docs
+    dir: docs/
     cmds:
       - task: install-docs
         vars:
@@ -95,7 +95,7 @@ tasks:
             --no-progress
   update-docs:
     desc: Update docs dependencies
-    dir: docs
+    dir: docs/
     cmds:
       - task: install-docs-internal
       - >
@@ -106,7 +106,7 @@ tasks:
         {{ '{{ .CLI_ARGS }}' }}
   test-docs:
     desc: Test docs
-    dir: docs
+    dir: docs/
     cmds:
       - task: install-docs-internal
       - >
@@ -117,7 +117,7 @@ tasks:
         {{ '{{ .CLI_ARGS }}' }}
   docs:
     desc: Run docusaurus
-    dir: docs
+    dir: docs/
     interactive: true
     cmds:
       - task: install-docs-internal
@@ -136,51 +136,49 @@ tasks:
         --recursive
         --force
         {{ '{{ .CLI_ARGS }}' }}
-        .venv
+        .venv/
     status:
       - >
         test
         '!'
         -d
-        ./.venv/
-  purge:
-    desc: Clean everything
-    cmds:
-      - defer:
-          task: clean
-      {%- if docs %}
-      - defer:
-          task: remove-docs-node-modules
-      {%- endif %}
+        .venv/
   venv:
     desc: Create virtualenv
     cmds:
-      - task: clean
-        vars:
-          CLI_ARGS: ""
       - >
+        test
+        -f
+        .venv/bin/activate
+        &&
+        source
+        .venv/bin/activate
+        &&
+        deactivate
+        ;
         python
         -m
         venv
         {{ '{{ .CLI_ARGS }}' }}
-        .venv
-    status:
-      - >
-        test
-        -d
-        ./.venv/
+        .venv/
+        &&
+        python
+        -m
+        venv
+        --upgrade
+        .venv/
   install:
     desc: Install package
     sources:
-      - ./flake.lock
-      - ./*.nix
-      - ./poetry.lock
-      - ./poetry.toml
-      - ./pyproject.toml
-      - ./Taskfile.dist.{yaml,yml}
-      - ./{taskfile,Taskfile}.{yaml,yml}
+      - flake.lock
+      - "*.nix"
+      - poetry.lock
+      - poetry.toml
+      - pyproject.toml
+      - Taskfile.dist.yaml
+      - "{taskfile,Taskfile}.{yaml,yml}"
     generates:
-      - ./.venv/lib/python*/site-packages/{{ importname }}-*.dist-info/*
+      - .venv/**/*
     cmds:
       - task: venv
         vars:
@@ -204,9 +202,7 @@ tasks:
   update:
     desc: Update dependencies
     cmds:
-      - task: venv
-        vars:
-          CLI_ARGS: ""
+      - task: install-internal
       - >
         source
         .venv/bin/activate
@@ -218,9 +214,7 @@ tasks:
   lock:
     desc: Update dependencies versions in lock file
     cmds:
-      - task: venv
-        vars:
-          CLI_ARGS: ""
+      - task: install-internal
       - >
         source
         .venv/bin/activate
@@ -232,13 +226,14 @@ tasks:
   bump:
     desc: Bump version
     cmds:
+      - task: install-internal
       - >
         source
         .venv/bin/activate
         &&
         poetry
         version
-        {{ '{{ .CLI_ARGS | default "patch" }}' }}
+        {{ '{{ .CLI_ARGS | default "minor" }}' }}
   test:
     desc: Run tests
     cmds:
@@ -250,7 +245,7 @@ tasks:
         pytest
         {{ '{{ .CLI_ARGS }}' }}
   run:
-    desc: Run package
+    desc: Run the app
     interactive: true
     cmds:
       - task: install-internal
@@ -258,7 +253,7 @@ tasks:
         source
         .venv/bin/activate
         &&
-        {{ projectname }}
+        {{ appname }}
         {{ '{{ .CLI_ARGS }}' }}
   docker:
     desc: Run in docker container

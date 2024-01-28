@@ -2,10 +2,11 @@ from typing import Optional
 
 import typer
 
-from {{ importname }}.api import AppBuilder
+from {{ importname }}.api.app import AppBuilder
 from {{ importname }}.cli import CliBuilder
-from {{ importname }}.config import ConfigBuilder, ConfigError
-from {{ importname }}.console import EmergencyConsoleBuilder
+from {{ importname }}.config.builder import ConfigBuilder
+from {{ importname }}.config.errors import ConfigError
+from {{ importname }}.console import FallbackConsoleBuilder
 from {{ importname }}.server import Server
 
 cli = CliBuilder().build()
@@ -29,28 +30,28 @@ def main(
 ) -> None:
     """Main entry point."""
 
-    emergency = EmergencyConsoleBuilder().build()
+    console = FallbackConsoleBuilder().build()
 
     try:
         config = ConfigBuilder(config_file, config_overrides).build()
     except ConfigError as e:
-        emergency.print("Failed to load config!")
-        emergency.print_exception()
+        console.print("Failed to load config!")
+        console.print_exception()
         raise typer.Exit(1) from e
 
     try:
         app = AppBuilder(config).build()
     except Exception as e:
-        emergency.print("Failed to build app!")
-        emergency.print_exception()
+        console.print("Failed to build app!")
+        console.print_exception()
         raise typer.Exit(2) from e
 
     try:
         server = Server(app, config)
         server.run()
     except Exception as e:
-        emergency.print("Failed to run server!")
-        emergency.print_exception()
+        console.print("Failed to run server!")
+        console.print_exception()
         raise typer.Exit(3) from e
 
 

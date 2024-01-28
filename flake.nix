@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixos-unstable";
+      url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     };
 
     flake-parts = {
@@ -35,12 +35,12 @@
         system,
         ...
       }: let
-        pytest = pkgs.python3.withPackages (ps: [ps.pytest ps.plumbum]);
+        python = pkgs.python311.withPackages (ps: [ps.pytest ps.plumbum]);
         nil = pkgs.nil;
         task = pkgs.go-task;
+        coreutils = pkgs.coreutils;
         trunk = pkgs.trunk-io;
-        # Build copier manually, because the nixpkgs version is outdated
-        copier = pkgs.callPackage ./copier.nix {};
+        copier = pkgs.copier;
       in {
         # Override pkgs argument
         _module.args.pkgs = import inputs.nixpkgs {
@@ -64,12 +64,17 @@
             name = "dev";
 
             packages = [
-              pytest
+              python
               nil
               task
+              coreutils
               trunk
               copier
             ];
+
+            shellHook = ''
+              export TMPDIR=/tmp
+            '';
           };
 
           template = pkgs.mkShell {
@@ -77,8 +82,13 @@
 
             packages = [
               task
+              coreutils
               copier
             ];
+
+            shellHook = ''
+              export TMPDIR=/tmp
+            '';
           };
 
           lint = pkgs.mkShell {
@@ -86,18 +96,28 @@
 
             packages = [
               task
+              coreutils
               trunk
             ];
+
+            shellHook = ''
+              export TMPDIR=/tmp
+            '';
           };
 
           test = pkgs.mkShell {
             name = "test";
 
             packages = [
-              pytest
+              python
               task
+              coreutils
               copier
             ];
+
+            shellHook = ''
+              export TMPDIR=/tmp
+            '';
           };
         };
       };

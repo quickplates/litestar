@@ -1,100 +1,221 @@
 {
-  // The Compose file to use
-  "dockerComposeFile": "docker-compose.yaml",
-  // The service that will be used by all tools
-  "service": "dev",
-  // Where the source code is located in the container
-  "workspaceFolder": "/workspace",
-  // The user to be used by all tools
-  "remoteUser": "vscode",
-  // The user to be used by all other processes
-  "containerUser": "vscode",
-  // Override the default command to keep the container running
-  "overrideCommand": true,
-  // Extra features to install to the container
-  // Pin feature versions to ensure reproducibility
-  "features": {
-    // Install Nix
-    "ghcr.io/devcontainers/features/nix:1.1.3": {
-      // Pin version to ensure reproducibility
-      "version": "2.15.1",
-      // Multi-user mode is the best in this case
-      "multiUser": true,
-      // Enable experimental features
-      "extraNixConfig": "experimental-features = nix-command flakes"
-    },
-    // Install Direnv
-    "ghcr.io/devcontainers-contrib/features/gh-release:1.0.17": {
-      "repo": "direnv/direnv",
-      "binaryNames": "direnv",
-      // Pin version to ensure reproducibility
-      "version": "2.32.3"
-    },
-    // Install Starship
-    "ghcr.io/devcontainers-contrib/features/starship:1.0.6": {
-      // Pin version to ensure reproducibility
-      "version": "1.14.2"
-    },
-    // Enable using Docker from within the container
-    "ghcr.io/devcontainers/features/docker-in-docker:2.2.0": {
-      // Pin Engine version to ensure reproducibility
-      "version": "20.10.25",
-      // Use the Moby engine instead of Docker CE
-      "moby": true,
-      // Use Docker Compose v2
-      "dockerDashComposeVersion": "v2",
-      // Enable BuildKit
-      "installDockerBuildx": true
-    }
+  // Build the base image
+  "build": {
+    // Docker context to use, relative to this file
+    "context": "image/",
+    // Dockerfile to use, relative to this file
+    "dockerfile": "image/Dockerfile"
   },
-  // Run a command when the container is created
-  "onCreateCommand": "./.devcontainer/setup.sh",
-  // Run a command when the content is updated
-  "updateContentCommand": "./.devcontainer/update.sh",
   // Tool-specific settings
   "customizations": {
     // VS Code settings
     "vscode": {
       // Extensions to install
       "extensions": [
+        // Nix
+        "jnoortheen.nix-ide",
         // Direnv
         "mkhl.direnv",
+        // Python
+        "ms-python.python",
+        // Jinja
+        "samuelcolvin.jinjahtml",
+        // TOML
+        "tamasfe.even-better-toml",
         // Task
         "task.vscode-task",
         // Trunk
-        "Trunk.io",
-        // Ignore files
-        "Syler.ignore",
-        // Nix
-        "jnoortheen.nix-ide",
-        // Improved Markdown preview
-        "bierner.github-markdown-preview",
-        // SVG preview
-        "jock.svg",
-        // Jinja templates
-        "samuelcolvin.jinjahtml",
-        // Python for tests
-        "ms-python.python",
-        // TOML
-        "tamasfe.even-better-toml",
-        // GitLens
-        "eamodio.gitlens",
-        // GitHub Copilot
-        "GitHub.copilot"
+        "Trunk.io"
       ],
       // Settings to override
       "settings": {
-        // Don't forward ports automatically
-        "remote.autoForwardPorts": false,
         // Set Trunk as the default formatter
         "editor.defaultFormatter": "trunk.io",
-        // Enable GitHub Copilot for all languages
-        // For some reason, wildcard alone is not enough
-        "github.copilot.enable": {
-          "*": true,
-          "plaintext": true,
-          "markdown": true,
-          "scminput": true
+        // Associate templated files
+        "files.associations": {
+          "*.html.jinja": "jinja-html",
+          "*.html*endif*.jinja": "jinja-html",
+          "*.xml*endif*.jinja": "jinja-xml",
+          "*.css*endif*.jinja": "jinja-css",
+          "*.json*endif*.jinja": "jinja-json",
+          "*.md*endif*.jinja": "jinja-md",
+          "*.yml*endif*.jinja": "jinja-yaml",
+          "*.yaml*endif*.jinja": "jinja-yaml",
+          "*_copier_conf.answers_file*.jinja": "jinja-yaml",
+          "*.toml*endif*.jinja": "jinja-toml",
+          "*.tex*endif*.jinja": "jinja-latex",
+          "*.latex*endif*.jinja": "jinja-latex",
+          "*.lua*endif*.jinja": "jinja-lua",
+          "*.properties.jinja": "jinja-properties",
+          "*.properties*endif*.jinja": "jinja-properties",
+          "*.cfg.jinja": "jinja-properties",
+          "*.cfg*endif*.jinja": "jinja-properties",
+          "*.conf.jinja": "jinja-properties",
+          "*.conf*endif*.jinja": "jinja-properties",
+          "*.desktop.jinja": "jinja-properties",
+          "*.desktop*endif*.jinja": "jinja-properties",
+          "*.directory.jinja": "jinja-properties",
+          "*.directory*endif*.jinja": "jinja-properties",
+          "*.ini.jinja": "jinja-properties",
+          "*.ini*endif*.jinja": "jinja-properties",
+          "*.sh.jinja": "jinja-shell",
+          "*.sh*endif*.jinja": "jinja-shell",
+          "*.bash.jinja": "jinja-shell",
+          "*.bash*endif*.jinja": "jinja-shell",
+          "*.bashrc.jinja": "jinja-shell",
+          "*.bashrc*endif*.jinja": "jinja-shell",
+          "*.bash_aliases.jinja": "jinja-shell",
+          "*.bash_aliases*endif*.jinja": "jinja-shell",
+          "*.bash_profile.jinja": "jinja-shell",
+          "*.bash_profile*endif*.jinja": "jinja-shell",
+          "*.bash_login.jinja": "jinja-shell",
+          "*.bash_login*endif*.jinja": "jinja-shell",
+          "*.ebuild.jinja": "jinja-shell",
+          "*.ebuild*endif*.jinja": "jinja-shell",
+          "*.install.jinja": "jinja-shell",
+          "*.install*endif*.jinja": "jinja-shell",
+          "*.profile.jinja": "jinja-shell",
+          "*.profile*endif*.jinja": "jinja-shell",
+          "*.bash_logout.jinja": "jinja-shell",
+          "*.bash_logout*endif*.jinja": "jinja-shell",
+          "*.zsh.jinja": "jinja-shell",
+          "*.zsh*endif*.jinja": "jinja-shell",
+          "*.zshrc.jinja": "jinja-shell",
+          "*.zshrc*endif*.jinja": "jinja-shell",
+          "*.zprofile.jinja": "jinja-shell",
+          "*.zprofile*endif*.jinja": "jinja-shell",
+          "*.zlogin.jinja": "jinja-shell",
+          "*.zlogin*endif*.jinja": "jinja-shell",
+          "*.zlogout.jinja": "jinja-shell",
+          "*.zlogout*endif*.jinja": "jinja-shell",
+          "*.zshenv.jinja": "jinja-shell",
+          "*.zshenv*endif*.jinja": "jinja-shell",
+          "*.zsh-theme.jinja": "jinja-shell",
+          "*.zsh-theme*endif*.jinja": "jinja-shell",
+          "*.ksh.jinja": "jinja-shell",
+          "*.ksh*endif*.jinja": "jinja-shell",
+          "*.envrc.jinja": "jinja-shell",
+          "*.envrc*endif*.jinja": "jinja-shell",
+          "*.Dockerfile.jinja": "jinja-dockerfile",
+          "*.Dockerfile*endif*.jinja": "jinja-dockerfile",
+          "*.sql*endif*.jinja": "jinja-sql",
+          "*.py*endif*.jinja": "jinja-py",
+          "*.pyi*endif*.jinja": "jinja-py",
+          "*.pyx*endif*.jinja": "jinja-cy",
+          "*.pxd*endif*.jinja": "jinja-cy",
+          "*.pxi*endif*.jinja": "jinja-cy",
+          "*.tf*endif*.jinja": "jinja-terraform",
+          "*.tfvars*endif*.jinja": "jinja-terraform",
+          "*.hcl*endif*.jinja": "jinja-terraform",
+          "*.groovy*endif*.jinja": "jinja-groovy",
+          "*.link*endif*.jinja": "jinja-systemd",
+          "*.netdev*endif*.jinja": "jinja-systemd",
+          "*.network*endif*.jinja": "jinja-systemd",
+          "*.service*endif*.jinja": "jinja-systemd",
+          "*.socket*endif*.jinja": "jinja-systemd",
+          "*.device*endif*.jinja": "jinja-systemd",
+          "*.mount*endif*.jinja": "jinja-systemd",
+          "*.automount*endif*.jinja": "jinja-systemd",
+          "*.swap*endif*.jinja": "jinja-systemd",
+          "*.target*endif*.jinja": "jinja-systemd",
+          "*.path*endif*.jinja": "jinja-systemd",
+          "*.timer*endif*.jinja": "jinja-systemd",
+          "*.snapshot*endif*.jinja": "jinja-systemd",
+          "*.slice*endif*.jinja": "jinja-systemd",
+          "*.scope*endif*.jinja": "jinja-systemd",
+          "*.c*endif*.jinja": "jinja-cpp",
+          "*.cpp*endif*.jinja": "jinja-cpp",
+          "*.h*endif*.jinja": "jinja-cpp",
+          "*.java*endif*.jinja": "jinja-java",
+          "*.php*endif*.jinja": "jinja-php",
+          "*.ios*endif*.jinja": "jinja-cisco",
+          "*.cisco*endif*.jinja": "jinja-cisco",
+          "*.rs*endif*.jinja": "jinja-rust",
+          "*.abap?? endif ??": "abap",
+          "*.bat?? endif ??": "bat",
+          "*.bib?? endif ??": "bibtex",
+          "*.clj?? endif ??": "clojure",
+          "*.coffee?? endif ??": "coffeescript",
+          "*.c?? endif ??": "c",
+          "*.cpp?? endif ??": "cpp",
+          "*.cs?? endif ??": "csharp",
+          "*.docker-compose.yml?? endif ??": "dockercompose",
+          "*.docker-compose.override.yml?? endif ??": "dockercompose",
+          "*.css?? endif ??": "css",
+          "*.cu?? endif ??": "cuda-cpp",
+          "*.cuh?? endif ??": "cuda-cpp",
+          "*.diff?? endif ??": "diff",
+          "*.patch?? endif ??": "diff",
+          "*.Dockerfile?? endif ??": "dockerfile",
+          "*.fs?? endif ??": "fsharp",
+          "*.fsx?? endif ??": "fsharp",
+          "*.fsi?? endif ??": "fsharp",
+          "*.COMMIT_EDITMSG?? endif ??": "git-commit",
+          "*.git-rebase-todo?? endif ??": "git-rebase",
+          "*.go?? endif ??": "go",
+          "*.groovy?? endif ??": "groovy",
+          "*.gradle?? endif ??": "groovy",
+          "*.hbs?? endif ??": "handlebars",
+          "*.handlebars?? endif ??": "handlebars",
+          "*.haml?? endif ??": "haml",
+          "*.html?? endif ??": "html",
+          "*.htm?? endif ??": "html",
+          "*.xhtml?? endif ??": "html",
+          "*.ini?? endif ??": "ini",
+          "*.java?? endif ??": "java",
+          "*.js?? endif ??": "javascript",
+          "*.jsx?? endif ??": "javascriptreact",
+          "*.json?? endif ??": "json",
+          "*.jsonc?? endif ??": "jsonc",
+          "*.tex?? endif ??": "latex",
+          "*.less?? endif ??": "less",
+          "*.lua?? endif ??": "lua",
+          "*.makefile?? endif ??": "makefile",
+          "*.mk?? endif ??": "makefile",
+          "*.mak?? endif ??": "makefile",
+          "*.md?? endif ??": "markdown",
+          "*.m?? endif ??": "objective-c",
+          "*.mm?? endif ??": "objective-cpp",
+          "*.pl?? endif ??": "perl",
+          "*.pm?? endif ??": "perl",
+          "*.php?? endif ??": "php",
+          "*.php3?? endif ??": "php",
+          "*.php4?? endif ??": "php",
+          "*.php5?? endif ??": "php",
+          "*.phtml?? endif ??": "php",
+          "*.txt?? endif ??": "plaintext",
+          "*.text?? endif ??": "plaintext",
+          "*.conf?? endif ??": "plaintext",
+          "*.def?? endif ??": "plaintext",
+          "*.list?? endif ??": "plaintext",
+          "*.log?? endif ??": "plaintext",
+          "*.in?? endif ??": "plaintext",
+          "*.ps1?? endif ??": "powershell",
+          "*.psm1?? endif ??": "powershell",
+          "*.psd1?? endif ??": "powershell",
+          "*.jade?? endif ??": "pug",
+          "*.pug?? endif ??": "pug",
+          "*.py?? endif ??": "python",
+          "*.pyw?? endif ??": "python",
+          "*.r?? endif ??": "r",
+          "*.cshtml?? endif ??": "razor",
+          "*.rb?? endif ??": "ruby",
+          "*.rs?? endif ??": "rust",
+          "*.scss?? endif ??": "scss",
+          "*.sass?? endif ??": "sass",
+          "*.shader?? endif ??": "shaderlab",
+          "*.sh?? endif ??": "shellscript",
+          "*.slim?? endif ??": "slim",
+          "*.sql?? endif ??": "sql",
+          "*.styl?? endif ??": "stylus",
+          "*.stylus?? endif ??": "stylus",
+          "*.swift?? endif ??": "swift",
+          "*.ts?? endif ??": "typescript",
+          "*.tsx?? endif ??": "typescriptreact",
+          "*.xml?? endif ??": "xml",
+          "*.xsl?? endif ??": "xsl",
+          "*.yaml?? endif ??": "yaml",
+          "*.yml?? endif ??": "yaml"
         },
         // Use LSP for Nix
         "nix.enableLanguageServer": true,
@@ -108,11 +229,63 @@
             }
           }
         },
+        // Don't forward ports automatically
+        "remote.autoForwardPorts": false,
         // Use Nix IDE instead of Trunk for Nix files
         "[nix]": {
           "editor.defaultFormatter": "jnoortheen.nix-ide"
         }
       }
     }
-  }
+  },
+  // Extra features to install to the container
+  "features": {
+    // Install Nix
+    "ghcr.io/devcontainers/features/nix:1.2.0": {
+      // Enable experimental features
+      "extraNixConfig": "experimental-features = nix-command flakes",
+      "version": "2.19.3"
+    },
+    // Install Direnv
+    "ghcr.io/devcontainers-contrib/features/direnv:1.0.2": {
+      "version": "2.33.0"
+    },
+    // Install Starship
+    "ghcr.io/devcontainers-contrib/features/starship:1.0.9": {
+      "version": "1.17.1"
+    }
+  },
+  // Volumes
+  "mounts": [
+    // Mount secrets (shared)
+    "source=devcontainer-shared-secrets,target=/secrets/,type=volume",
+    // Mount nix store (not shared)
+    "source=devcontainer-${devcontainerId}-nix,target=/nix/,type=volume",
+    // Mount shell history (not shared)
+    "source=devcontainer-${devcontainerId}-shellhistory-persist,target=/persist/shellhistory/,type=volume",
+    // Mount trunk cache (shared)
+    "source=devcontainer-shared-trunk-cache,target=/cache/trunk/,type=volume"
+  ],
+  // Run a command when the container is created
+  "onCreateCommand": "/hooks/create.sh",
+  // Environment variables
+  "remoteEnv": {
+    // Set workspace path
+    "WORKSPACE": "${containerWorkspaceFolder}"
+  },
+  // Run arguments
+  "runArgs": [
+    // Use host UTS namespace
+    "--uts=host",
+    // Use host IPC
+    "--ipc=host",
+    // Use host network
+    "--network=host",
+    // Use host user namespace
+    "--userns=host",
+    // Use host cgroup namespace
+    "--cgroupns=host",
+    // Run with elevated privileges
+    "--privileged"
+  ]
 }

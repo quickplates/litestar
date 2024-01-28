@@ -1,7 +1,10 @@
-# Take only files in src into account for language stats
+# Mark everything as vendored
 * linguist-vendored
 {%- if docs %}
-docs/** -linguist-vendored linguist-documentation
+# Treat docs as documentation
+/docs/** -linguist-vendored linguist-documentation
 {%- endif %}
-tests/** -linguist-vendored linguist-documentation
-src/** -linguist-vendored
+# Unmark files in src, so that they are included in language stats
+/src/** -linguist-vendored
+# Treat tests as documentation
+/tests/** -linguist-vendored linguist-documentation

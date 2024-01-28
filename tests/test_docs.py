@@ -2,8 +2,9 @@ from pathlib import Path
 
 import copier
 import pytest
-from helpers.utils import CWD, SandboxedGitRepo
 from plumbum import local
+
+from tests.utils import CWD, SandboxedGitRepo
 
 
 @pytest.fixture()
@@ -11,16 +12,22 @@ def data() -> dict[str, str]:
     """Return a dictionary with the data to be used in the template."""
 
     return {
-        "username": "quickplates",
-        "email": "quickplates@mail.spietras.dev",
-        "projectname": "litestar-example",
-        "importname": "litestar_example",
-        "envprefix": "LITESTAR_EXAMPLE",
-        "description": "Litestar project example 🌠",
+        "accountname": "foo",
+        "email": "test@example.org",
+        "appname": "foo",
+        "importname": "foo",
+        "description": "Example app",
+        "reponame": "app-foo",
+        "repourl": "https://github.com/foo/app-foo",
+        "envprefix": "FOO",
+        "port": "8080",
         "docs": "true",
-        "docsurl": "https://quickplates.github.io/litestar-example",
+        "docsurl": "https://foo.github.io/app-foo",
         "releases": "false",
         "registry": "false",
+        "imagename": "apps/foo",
+        "events": "false",
+        "sse": "false",
     }
 
 
@@ -32,21 +39,20 @@ def copied_template_directory(
 ) -> Path:
     """Return a temporary directory with a copied template."""
 
-    prefix = "copied-template-"
+    tmp_path = tmp_path_factory.mktemp("copied-template-")
 
-    with tmp_path_factory.mktemp(prefix) as tmp_path:
-        copier.run_copy(
-            str(cloned_template_directory),
-            str(tmp_path),
-            data=data,
-            vcs_ref="HEAD",
-            quiet=True,
-        )
+    copier.run_copy(
+        str(cloned_template_directory),
+        str(tmp_path),
+        data=data,
+        vcs_ref="HEAD",
+        quiet=True,
+    )
 
-        with SandboxedGitRepo(tmp_path):
-            local.cmd.git("add", ".")
-            local.cmd.git("commit", "--message", "Initial commit")
-            yield tmp_path
+    with SandboxedGitRepo(tmp_path):
+        local.cmd.git("add", "./")
+        local.cmd.git("commit", "--message", "Initial commit")
+        yield tmp_path
 
 
 def test_docs(copied_template_directory: Path) -> None:
@@ -55,7 +61,7 @@ def test_docs(copied_template_directory: Path) -> None:
     with CWD(copied_template_directory):
         local.cmd.nix(
             "develop",
-            ".#docs",
+            "./#docs",
             "--command",
             "--",
             "task",

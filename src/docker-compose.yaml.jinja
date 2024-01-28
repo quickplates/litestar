@@ -1,5 +1,9 @@
----
 services:
-  {{ projectname }}:
-    build: .
+  {{ appname }}:
+    build:
+      context: ./
+      network: host
+    environment:
+      - "{{ envprefix }}__SERVER__HOST=${ {{- envprefix }}__SERVER__HOST:-0.0.0.0}"
+      - "{{ envprefix }}__SERVER__PORT=${ {{- envprefix }}__SERVER__PORT:-{{ port -}} }"
     network_mode: host
