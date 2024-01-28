@@ -1,4 +1,3 @@
----
 name: Test
 
 # Put 'on' in quotes to avoid YAML parsing error
@@ -9,30 +8,28 @@ name: Test
   push:
     branches:
       - main
-    # Run only on changes to files relevant to tests
+    # Run only on changes to relevant files
     paths:
-      - "src/**"
-      - "tests/**"
-      - "copier.yaml"
+      - .github/workflows/test.yaml
+      - src/**
+      - tests/**
+      - copier.yaml
+      - flake.lock
       - "*.nix"
-      - "flake.lock"
-      - "pytest.ini"
-      - "Taskfile.dist.yaml"
-      - ".github/workflows/test.yaml"
+      - Taskfile.dist.yaml
   # Run also on pull requests to main branch
   pull_request:
     branches:
       - main
-    # Run only on changes to files relevant to tests
+    # Run only on changes to relevant files
     paths:
-      - "src/**"
-      - "tests/**"
-      - "copier.yaml"
+      - .github/workflows/test.yaml
+      - src/**
+      - tests/**
+      - copier.yaml
+      - flake.lock
       - "*.nix"
-      - "flake.lock"
-      - "pytest.ini"
-      - "Taskfile.dist.yaml"
-      - ".github/workflows/test.yaml"
+      - Taskfile.dist.yaml
 
 jobs:
   test:
@@ -40,38 +37,38 @@ jobs:
     # Pin version of Ubuntu to avoid breaking changes
     runs-on: ubuntu-22.04
     # Use reasonable timeout to avoid stuck workflows
-    timeout-minutes: 10
+    timeout-minutes: 30
     env:
-      NIX_CACHE_DIR: /home/runner/.nixcache
-      TRUNK_CACHE_DIR: /home/runner/.trunkcache
-      POETRY_CACHE_DIR: /home/runner/.poetrycache
+      NIX_CACHE_DIR: /home/runner/.nixcache/
+      TRUNK_CACHE_DIR: /home/runner/.trunkcache/
+      POETRY_CACHE_DIR: /home/runner/.poetrycache/
     permissions:
       # Needed to checkout code
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v4.1.1
       - name: Setup Nix cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v4.0.0
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: test-nix
       - name: Setup Trunk cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v4.0.0
         with:
           path: ${{ env.TRUNK_CACHE_DIR }}
           key: test-trunk
       - name: Setup Poetry cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v4.0.0
         with:
           path: ${{ env.POETRY_CACHE_DIR }}
           key: test-poetry
       - name: Install Nix
-        uses: cachix/install-nix-action@v21
+        uses: cachix/install-nix-action@v25
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.15.1/install
+          install_url: https://releases.nixos.org/nix/nix-2.19.3/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
@@ -86,7 +83,7 @@ jobs:
         run: >
           nix
           develop
-          .#test
+          ./#test
           --command
           --
           task
@@ -100,5 +97,5 @@ jobs:
           ${{ env.NIX_CACHE_DIR }}
           &&
           nix-store
-          --export $(find /nix/store -maxdepth 1 -name '*-*')
+          --export $(find /nix/store/ -maxdepth 1 -name '*-*')
           > ${{ env.NIX_CACHE_DIR }}/archive.nar

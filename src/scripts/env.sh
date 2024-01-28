@@ -25,23 +25,23 @@ if [[ -f "${_cache}/archive.nar" ]]; then
 fi
 
 # We need to create necessary directories first
-mkdir -p "${_build}/closure"
+mkdir -p "${_build}/closure/"
 
 # Save system to variable so we can reuse it easily
 _system=$(nix eval --impure --raw --expr 'builtins.currentSystem')
 
 # This will build the shell and all its dependencies
-nix build --no-link ".#devShells.${_system}.${_shell}"
+nix build --no-link "path:./#devShells.${_system}.${_shell}"
 
 # Save all paths needed for shell to a file
-nix path-info --quiet --quiet --quiet --quiet --quiet --recursive ".#devShells.${_system}.${_shell}" >"${_build}/paths"
+nix path-info --quiet --quiet --quiet --quiet --quiet --recursive "path:./#devShells.${_system}.${_shell}" >"${_build}/paths"
 
 # Copy all paths to a separate directory
 # shellcheck disable=SC2046
-cp --recursive $(cat "${_build}/paths" || true) "${_build}/closure"
+cp --recursive $(cat "${_build}/paths" || true) "${_build}/closure/"
 
 # Generate activation script for shell and copy it
-nix print-dev-env ".#devShells.${_system}.${_shell}" >"${_build}/activate"
+nix print-dev-env "path:./#devShells.${_system}.${_shell}" >"${_build}/activate"
 
 # Save all paths needed for shell to cache
 # shellcheck disable=SC2046

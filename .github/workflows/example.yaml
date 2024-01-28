@@ -1,4 +1,3 @@
----
 name: Example
 
 # Only one workflow can run at a time
@@ -17,12 +16,12 @@ concurrency:
       - main
     # Run only on changes to relevant files
     paths:
-      - "src/**"
-      - "copier.yaml"
+      - .github/workflows/example.yaml
+      - src/**
+      - copier.yaml
+      - flake.lock
       - "*.nix"
-      - "flake.lock"
-      - "Taskfile.dist.yaml"
-      - ".github/workflows/example.yaml"
+      - Taskfile.dist.yaml
 
 jobs:
   build:
@@ -30,26 +29,26 @@ jobs:
     # Pin version of Ubuntu to avoid breaking changes
     runs-on: ubuntu-22.04
     # Use reasonable timeout to avoid stuck workflows
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
-      NIX_CACHE_DIR: /home/runner/.nixcache
+      NIX_CACHE_DIR: /home/runner/.nixcache/
     permissions:
       # Needed to checkout code
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v4.1.1
       - name: Setup Nix cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v4.0.0
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: example-nix
       - name: Install Nix
-        uses: cachix/install-nix-action@v21
+        uses: cachix/install-nix-action@v25
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.15.1/install
+          install_url: https://releases.nixos.org/nix/nix-2.19.3/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
@@ -61,21 +60,35 @@ jobs:
         run: >
           nix
           develop
-          .#template
+          ./#template
           --command
           --
           task
           shallow-build
+          --
+          --data
+          'accountname=quickplates'
+          --data
+          'email=quickplates@mail.spietras.dev'
+          --data
+          'appname=litestar-example'
+          --data
+          'reponame=litestar-example'
+          --data
+          'description=Litestar app example 🌠'
       # Create archive to retain file permissions
       - name: Create archive
         run: >
           tar
-          -C build
-          -cvf
+          --directory
+          build/
+          --create
+          --verbose
+          --file
           archive.tar
-          .
+          ./
       - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4.3.0
         with:
           name: build
           path: archive.tar
@@ -88,7 +101,7 @@ jobs:
           ${{ env.NIX_CACHE_DIR }}
           &&
           nix-store
-          --export $(find /nix/store -maxdepth 1 -name '*-*')
+          --export $(find /nix/store/ -maxdepth 1 -name '*-*')
           > ${{ env.NIX_CACHE_DIR }}/archive.nar
   push:
     name: Push changes
@@ -97,33 +110,36 @@ jobs:
     # Pin version of Ubuntu to avoid breaking changes
     runs-on: ubuntu-22.04
     # Use reasonable timeout to avoid stuck workflows
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3.0.2
+        uses: actions/download-artifact@v4.1.1
         with:
           name: build
       - name: Extract archive
         run: >
           mkdir
           -p
-          build
+          build/
           &&
           tar
-          -C build
-          -xvf
+          --directory
+          build/
+          --extract
+          --verbose
+          --file
           archive.tar
       - name: Checkout example repository
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v4.1.1
         with:
-          repository: ${{ github.repository }}-example
-          token: ${{ secrets.ACCESS_TOKEN }}
+          repository: quickplates/litestar-example
+          token: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
           # Needed to reset to first commit
           fetch-depth: 0
-          path: example
+          path: example/
       # Configure git to use GitHub Actions bot as committer
       - name: Configure git
-        working-directory: example
+        working-directory: example/
         run: >
           git
           config
@@ -135,14 +151,14 @@ jobs:
           user.email
           "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Reset example repository to first commit
-        working-directory: example
+        working-directory: example/
         run: >
           git
           reset
           --hard
-          $(git rev-list --max-parents=0 HEAD)
+          "$(git rev-list --max-parents=0 HEAD)"
       - name: Push changes
-        working-directory: example
+        working-directory: example/
         run: >
           git
           push
@@ -150,7 +166,7 @@ jobs:
           origin
           HEAD
       - name: Create new branch
-        working-directory: example
+        working-directory: example/
         run: >
           git
           checkout
@@ -161,22 +177,22 @@ jobs:
           cp
           -r
           build/.
-          example
+          example/
       - name: Add changes
-        working-directory: example
+        working-directory: example/
         run: >
           git
           add
-          .
+          ./
       - name: Commit changes
-        working-directory: example
+        working-directory: example/
         run: >
           git
           commit
           --message
-          "Added template files"
+          'Added template files'
       - name: Push changes
-        working-directory: example
+        working-directory: example/
         run: >
           git
           push
@@ -184,15 +200,15 @@ jobs:
           origin
           HEAD
       - name: Create pull request
-        working-directory: example
+        working-directory: example/
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
         run: >
           gh
           pr
           create
           --title
-          "Added template files"
+          'Added template files'
           --body
           'Created automatically by GitHub Actions workflow from
           [`${{ github.repository }}`](
@@ -201,22 +217,21 @@ jobs:
           --base
           main
           --assignee
-          "@me"
+          '@me'
           --fill
           --label
-          "feature"
+          'feature'
       - name: Delete all releases and tags
-        working-directory: example
+        working-directory: example/
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
         run: >
           gh
           release
           list
-          --exclude-drafts
           |
           awk
-          -F
+          --field-separator
           '\t'
           '{print $3}'
           |
@@ -235,9 +250,9 @@ jobs:
           ;
           done
       - name: Merge pull request
-        working-directory: example
+        working-directory: example/
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
         run: >
           gh
           pr
@@ -246,7 +261,7 @@ jobs:
           --delete-branch
           --squash
       - name: Fetch changes from origin
-        working-directory: example
+        working-directory: example/
         run: >
           git
           fetch
@@ -254,9 +269,9 @@ jobs:
           --prune-tags
           origin
       - name: Create release
-        working-directory: example
+        working-directory: example/
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
         run: >
           gh
           release

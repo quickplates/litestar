@@ -1,8 +1,5 @@
-# Local development environment overrides
-/local.nix
-
 #Task
-/.task
+/.task/
 /Taskfile.yaml
 /Taskfile.yml
 
@@ -11,7 +8,7 @@
 .todo
 
 # Byte-compiled / optimized / DLL files
-__pycache__
+__pycache__/
 *.py[cod]
 *$py.class
 
@@ -19,26 +16,28 @@ __pycache__
 *.so
 
 # Pytest
-.pytest_cache
+.pytest_cache/
 
 # Environment
-.venv
+/.venv/
 
 # Tracked, but not needed
-.devcontainer
-.github
-.trunk
-.vscode
+/.devcontainer/
+/.github/
+/.trunk/
+/.vscode/
 {%- if docs %}
-docs
+/docs/
 {%- endif %}
-tests
-.copier-answers.yaml
-.dockerignore
-.envrc
-.gitattributes
-.gitignore
-CONTRIBUTING.md
-docker-compose.yaml
-Dockerfile
-Taskfile.dist.yaml
+/tests/
+/.copier-answers.yaml
+/.dockerignore
+/.envrc
+/.gitattributes
+/.gitignore
+/CONTRIBUTING.md
+/docker-compose.yaml
+/Dockerfile
+/LICENSE
+/README.md
+/Taskfile.dist.yaml

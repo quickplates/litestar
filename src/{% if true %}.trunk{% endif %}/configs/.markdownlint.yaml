@@ -1,4 +1,3 @@
----
 # Enable all rules by default
 default: true
 

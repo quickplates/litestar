@@ -1,96 +1,94 @@
----
 version: 0.1
 cli:
-  version: 1.10.0
+  version: 1.19.0
 plugins:
   sources:
     - id: trunk
-      ref: v0.0.17
+      ref: v1.4.2
       uri: https://github.com/trunk-io/plugins
 runtimes:
   enabled:
-    # Needed for gitleaks, shfmt, actionlint
-    - go@1.19.5
-    # Needed for prettier, markdownlint{% if docs %}, svgo, eslint{% endif %}
-    - node@18.12.1
-    # Needed for yamllint, black, ruff
-    - python@3.10.8
+    # Needed for gitleaks, shfmt
+    - go@1.21.6
+    # Needed for {% if docs %}eslint, {% endif %}markdownlint, prettier{% if docs %}, svgo{% endif %}
+    - node@20.11.0
+    # Needed for black, ruff, yamllint
+    - python@3.11.6
 lint:
   ignore:
     - linters: [ALL]
       paths:
         # Ignore copier answers file
         - "**/.copier-answers.yaml"
-        - "**/.copier-answers.yml"
   definitions:
     # Nix formatting check (local)
     - name: nix-fmt-check
       files: [nix]
-      run_when: [ci, cli]
       commands:
         - output: pass_fail
           read_output_from: stderr
           run: >-
             nix
             --accept-flake-config
-            --extra-experimental-features 'nix-command flakes'
+            --extra-experimental-features
+            'nix-command flakes'
             --no-warn-dirty
             fmt
             --
             --check
-            path://${workspace}/${target}
+            ${target}
           success_codes: [0, 1]
     # Nix flake check (local)
     - name: nix-flake-check
       files: [nix]
-      run_when: [ci, cli]
       commands:
         - output: pass_fail
-          target: .
+          target: ./
           read_output_from: stderr
           run: >-
             nix
             --accept-flake-config
-            --extra-experimental-features 'nix-command flakes'
+            --extra-experimental-features
+            'nix-command flakes'
             --no-warn-dirty
             flake
             check
-            path://${workspace}
+            path:${target}
           success_codes: [0, 1]
-  disabled:
-    # Disable default nix formatter
-    - nixpkgs-fmt
   enabled:
+    # GitHub Actions linting
+    - actionlint@1.6.26
+    # Python formatting
+    - black@24.1.0
+    {%- if docs %}
+    # JavaScript linting
+    - eslint@8.56.0
+    {%- endif %}
     # Check for whitespace errors
     - git-diff-check
     # Check for secrets in the code
-    - gitleaks@8.16.3
-    # JSON, YAML, Markdown formatting
-    - prettier@2.8.8
+    - gitleaks@8.18.1
+    # Dockerfile linting
+    - hadolint@2.12.0
     # Markdown linting
-    - markdownlint@0.34.0
-    # YAML linting
-    - yamllint@1.32.0
-    # Shell scripts linting
-    - shellcheck@0.9.0
-    # Shell scripts formatting
-    - shfmt@3.5.0
-    # GitHub Actions linting
-    - actionlint@1.6.24
-    {%- if docs %}
-    # SVG formatting
-    - svgo@3.0.2
-    # JavaScript linting
-    - eslint@8.41.0
-    {%- endif %}
-    # Python formatting
-    - black@23.3.0
-    - isort@5.12.0
-    # Python linting
-    - ruff@0.0.270
-    # TOML
-    - taplo@0.8.0
+    - markdownlint@0.38.0
     # Nix formatting check
     - nix-fmt-check@SYSTEM
     # Nix flake check
     - nix-flake-check@SYSTEM
+    # JS, JSON, YAML, Markdown formatting
+    - prettier@3.0.2
+    # Python linting
+    - ruff@0.1.14
+    # Shell linting
+    - shellcheck@0.9.0
+    # Shell formatting
+    - shfmt@3.7.0
+    {%- if docs %}
+    # SVG formatting
+    - svgo@3.2.0
+    {%- endif %}
+    # TOML formatting
+    - taplo@0.8.1
+    # YAML linting
+    - yamllint@1.33.0

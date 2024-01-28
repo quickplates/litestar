@@ -1,13 +1,20 @@
+from importlib import metadata
+
 from litestar import Litestar, Router
+{%- if events %}
+from litestar.channels import ChannelsPlugin
+from litestar.channels.backends.memory import MemoryChannelsBackend
+{%- endif %}
+from litestar.contrib.pydantic import PydanticPlugin
 from litestar.openapi import OpenAPIConfig
+from litestar.plugins import PluginProtocol
 
 from {{ importname }}.api.routes.router import router
-from {{ importname }}.builder import Builder
-from {{ importname }}.config import Config
+from {{ importname }}.config.models import Config
 from {{ importname }}.state import State
 
 
-class AppBuilder(Builder[Litestar]):
+class AppBuilder:
     """Builds the app.
 
     Args:
@@ -22,17 +29,43 @@ class AppBuilder(Builder[Litestar]):
 
     def _build_openapi_config(self) -> OpenAPIConfig:
         return OpenAPIConfig(
-            title="{{ projectname }}",
-            version="0.1.0",
+            title="{{ appname }} app",
+            version=metadata.version("{{ importname }}"),
             description="{{ description }}",
         )
+    {%- if events %}
+
+    def _build_channels_plugin(self) -> ChannelsPlugin:
+        return ChannelsPlugin(
+            backend=MemoryChannelsBackend(),
+            channels=["events"],
+        )
+    {%- endif %}
+
+    def _build_pydantic_plugin(self) -> PydanticPlugin:
+        return PydanticPlugin(
+            prefer_alias=True,
+        )
+
+    def _build_plugins(self) -> list[PluginProtocol]:
+        return [
+            {%- if events %}
+            self._build_channels_plugin(),
+            {%- endif %}
+            self._build_pydantic_plugin(),
+        ]
 
     def _build_initial_state(self) -> State:
-        return State({"config": self._config})
+        return State(
+            {
+                "config": self._config,
+            }
+        )
 
     def build(self) -> Litestar:
         return Litestar(
             route_handlers=self._get_route_handlers(),
             openapi_config=self._build_openapi_config(),
+            plugins=self._build_plugins(),
             state=self._build_initial_state(),
         )

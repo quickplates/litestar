@@ -1,6 +1,29 @@
 # Generic, formatter-friendly config.
 # See https://beta.ruff.rs/docs/rules
-select = ["F", "E", "W", "I", "N", "UP", "B", "PT", "TRY", "FLY"]
+select = [
+  # Pyflakes
+  "F",
+  # pycodestyle errors
+  "E",
+  # pycodestyle warnings
+  "W",
+  # isort
+  "I",
+  # pep8-naming
+  "N",
+  # pyupgrade
+  "UP",
+  # flake8-bugbear
+  "B",
+  # flake8-pytest-style
+  "PT",
+  # tryceratops
+  "TRY",
+  # flynt
+  "FLY",
+]
 
-# Never enforce `E501` (line length violations). This should be handled by formatters.
-ignore = ["E501"]
+ignore = [
+  # Never enforce line length violations. This should be handled by formatters.
+  "E501",
+]

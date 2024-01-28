@@ -2,14 +2,14 @@ from collections.abc import Iterable
 from typing import TextIO
 
 from omegaconf import OmegaConf
+from pydantic import ValidationError
 from yaml import YAMLError
 
-from {{ importname }}.builder import Builder
 from {{ importname }}.config.errors import ConfigParseError
 from {{ importname }}.config.models import Config
 
 
-class ConfigBuilder(Builder[Config]):
+class ConfigBuilder:
     """Builds the config.
 
     Args:
@@ -35,6 +35,6 @@ class ConfigBuilder(Builder[Config]):
                     config, OmegaConf.from_dotlist(list(self._overrides))
                 )
             config = OmegaConf.to_container(config, resolve=True)
-            return Config.parse_obj(config)
-        except (ValueError, YAMLError) as e:
+            return Config.model_validate(config)
+        except (YAMLError, ValidationError) as e:
             raise ConfigParseError from e

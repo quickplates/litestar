@@ -2,7 +2,7 @@
 /local.nix
 
 #Task
-/.task
+/.task/
 /Taskfile.yaml
 /Taskfile.yml
 
@@ -11,10 +11,10 @@
 .todo
 
 # Build
-/build
+/build/
 
 # Tests
-__pycache__
+__pycache__/
 *.py[cod]
 *$py.class
-.pytest_cache
+.pytest_cache/

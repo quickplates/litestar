@@ -9,10 +9,10 @@ def data() -> dict[str, str]:
     """Return a dictionary with the data to be used in the template."""
 
     return {
-        "username": "quickplates",
-        "email": "quickplates@mail.spietras.dev",
-        "projectname": "litestar-example",
-        "description": "Litestar project example 🌠",
+        "accountname": "foo",
+        "email": "test@example.org",
+        "appname": "foo",
+        "description": "Example app",
     }
 
 
@@ -23,14 +23,13 @@ def test_copy(
 ) -> None:
     """Test that the template can be copied without errors using defaults."""
 
-    prefix = "copied-template-"
+    tmp_path = tmp_path_factory.mktemp("copied-template-")
 
-    with tmp_path_factory.mktemp(prefix) as tmp_path:
-        copier.run_copy(
-            str(cloned_template_directory),
-            str(tmp_path),
-            defaults=True,
-            data=data,
-            vcs_ref="HEAD",
-            quiet=True,
-        )
+    copier.run_copy(
+        str(cloned_template_directory),
+        str(tmp_path),
+        defaults=True,
+        data=data,
+        vcs_ref="HEAD",
+        quiet=True,
+    )

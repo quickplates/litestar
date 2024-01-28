@@ -1,11 +1,44 @@
 # Generic, formatter-friendly config.
 # See https://beta.ruff.rs/docs/rules
-select = ["F", "E", "W", "I", "N", "UP", "B", "PT", "TRY", "FLY"]
+select = [
+  # Pyflakes
+  "F",
+  # pycodestyle errors
+  "E",
+  # pycodestyle warnings
+  "W",
+  # isort
+  "I",
+  # pep8-naming
+  "N",
+  # pyupgrade
+  "UP",
+  # flake8-bugbear
+  "B",
+  # flake8-pytest-style
+  "PT",
+  # tryceratops
+  "TRY",
+  # flynt
+  "FLY",
+]
 
-# Never enforce `E501` (line length violations). This should be handled by formatters.
-# Allow `B008` (function calls in argument defaults) and `UP007` (old-style type annotations).
-# This is a common pattern in some frameworks.
-ignore = ["E501", "B008", "UP007"]
+ignore = [
+  # Never enforce line length violations. This should be handled by formatters.
+  "E501",
+  # Allow function calls in default arguments (some frameworks work this way).
+  "B008",
+  # Allow old-style type annotations (some frameworks require this).
+  "UP007",
+]
 
-# Allow imports relative to the "src" and "test" directories.
-src = ["src", "test"]
+src = [
+  # Allow imports relative to src directory, where the source code lives.
+  "src/",
+]
+
+[lint.isort]
+known-first-party = [
+  # Treat tests as a first-party module.
+  "tests",
+]

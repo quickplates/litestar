@@ -1,17 +1,17 @@
-<h1 align="center">{{ projectname }}</h1>
+<h1 align="center">{{ appname }} app</h1>
 
 <div align="center">
 
 {{ description }}
 
-[![Lint](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/lint.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/lint.yaml)
-[![Test](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/test.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/test.yaml)
-[![Image](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/image.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/image.yaml)
+[![Lint]({{ repourl }}/actions/workflows/lint.yaml/badge.svg)]({{ repourl }}/actions/workflows/lint.yaml)
+[![Test]({{ repourl }}/actions/workflows/test.yaml/badge.svg)]({{ repourl }}/actions/workflows/test.yaml)
+[![Image]({{ repourl }}/actions/workflows/image.yaml/badge.svg)]({{ repourl }}/actions/workflows/image.yaml)
 {%- if registry %}
-[![Registry](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/registry.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/registry.yaml)
+[![Registry]({{ repourl }}/actions/workflows/registry.yaml/badge.svg)]({{ repourl }}/actions/workflows/registry.yaml)
 {%- endif %}
 {%- if docs %}
-[![Docs](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/docs.yaml/badge.svg)](https://github.com/{{ username }}/{{ projectname }}/actions/workflows/docs.yaml)
+[![Docs]({{ repourl }}/actions/workflows/docs.yaml/badge.svg)]({{ repourl }}/actions/workflows/docs.yaml)
 {%- endif %}
 
 </div>
@@ -21,7 +21,7 @@
 ## 💡 About
 
 Treat this `README.md` as the landing page for people
-that want to **use** your project.
+that want to **use** your app.
 
 Write here whatever you want to tell them.
 {%- if docs %}
@@ -35,4 +35,4 @@ More in-depth documentation can be found
 ## 💻 Development
 
 Read more about how to develop the project
-[here](https://github.com/{{ username }}/{{ projectname }}/blob/main/CONTRIBUTING.md).
+[here]({{ repourl }}/blob/main/CONTRIBUTING.md).

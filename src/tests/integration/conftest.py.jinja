@@ -1,14 +1,32 @@
+from collections.abc import AsyncGenerator
+
 import pytest
+import pytest_asyncio
+from litestar import Litestar
 from litestar.testing import AsyncTestClient
 
-from {{ importname }}.api import AppBuilder
-from {{ importname }}.config import ConfigBuilder
+from {{ importname }}.api.app import AppBuilder
+from {{ importname }}.config.builder import ConfigBuilder
+from {{ importname }}.config.models import Config
 
 
 @pytest.fixture(scope="session")
-def client() -> AsyncTestClient:
+def config() -> Config:
+    """Loaded configuration."""
+
+    return ConfigBuilder().build()
+
+
+@pytest.fixture(scope="session")
+def app(config: Config) -> Litestar:
+    """Reusable application."""
+
+    return AppBuilder(config).build()
+
+
+@pytest_asyncio.fixture(scope="session")
+async def client(app: Litestar) -> AsyncGenerator[AsyncTestClient, None]:
     """Reusable test client."""
 
-    config = ConfigBuilder().build()
-    app = AppBuilder(config).build()
-    return AsyncTestClient(app=app)
+    async with AsyncTestClient(app=app) as client:
+        yield client
