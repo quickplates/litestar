@@ -49,6 +49,8 @@ copier copy gh:quickplates/litestar .
   and [`Pydantic`](https://docs.pydantic.dev/latest)
 - pleasant command line interfaces with [`Typer`](https://typer.tiangolo.com)
   and [`Rich`](https://rich.readthedocs.io)
+- support for [`Server-Sent Events`](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
+- live api documentation with [`Redoc`](https://redocly.com)
 
 ## 💻 Development
 
