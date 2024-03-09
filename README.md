@@ -42,7 +42,6 @@ copier copy gh:quickplates/litestar .
   with [`Docusaurus`](https://docusaurus.io)
 - optimized custom [`Docker`](https://www.docker.com) images
 - automatic releases on [`GitHub Container Registry`](https://ghcr.io)
-- local virtual environments with [`venv`](https://docs.python.org/3/library/venv.html)
 - dependency management with [`Poetry`](https://python-poetry.org)
 - testing with [`pytest`](https://pytest.org)
 - versatile configuration with [`OmegaConf`](https://omegaconf.readthedocs.io)
