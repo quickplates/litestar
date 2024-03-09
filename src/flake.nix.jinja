@@ -82,13 +82,8 @@
               copier
             ];
 
-            PYTHON_SITE_PACKAGES = "${python.sitePackages}";
-
             shellHook = ''
               export TMPDIR=/tmp
-              task install
-              . .venv/bin/activate
-              export PYTHONPATH="''${VIRTUAL_ENV:?}/''${PYTHON_SITE_PACKAGES:?}:''${PYTHONPATH:-}"
             '';
           };
 
@@ -102,13 +97,8 @@
               poetry
             ];
 
-            PYTHON_SITE_PACKAGES = "${python.sitePackages}";
-
             shellHook = ''
               export TMPDIR=/tmp
-              task install
-              . .venv/bin/activate
-              export PYTHONPATH="''${VIRTUAL_ENV:?}/''${PYTHON_SITE_PACKAGES:?}:''${PYTHONPATH:-}"
             '';
           };
 
@@ -121,8 +111,6 @@
               tini
               su-exec
             ];
-
-            PYTHON_SITE_PACKAGES = "${python.sitePackages}";
 
             shellHook = ''
               export TMPDIR=/tmp
@@ -170,13 +158,8 @@
               poetry
             ];
 
-            PYTHON_SITE_PACKAGES = "${python.sitePackages}";
-
             shellHook = ''
               export TMPDIR=/tmp
-              task install
-              . .venv/bin/activate
-              export PYTHONPATH="''${VIRTUAL_ENV:?}/''${PYTHON_SITE_PACKAGES:?}:''${PYTHONPATH:-}"
             '';
           };
           {%- if docs %}
