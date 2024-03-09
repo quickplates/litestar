@@ -3,7 +3,7 @@
 # It also has git, zsh and a bunch of other stuff preinstalled
 # Also, it includes a non-root 'vscode' user with sudo access
 # The version is pinned to ensure reproducibility
-FROM mcr.microsoft.com/devcontainers/base:1.0.20-ubuntu-22.04
+FROM mcr.microsoft.com/devcontainers/base:1.0.22-ubuntu-22.04
 
 ENV REMOTE_USER=vscode
 

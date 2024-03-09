@@ -49,26 +49,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.1.1
       - name: Setup Nix cache
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.1
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: test-nix
       - name: Setup Trunk cache
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.1
         with:
           path: ${{ env.TRUNK_CACHE_DIR }}
           key: test-trunk
       - name: Setup Poetry cache
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.1
         with:
           path: ${{ env.POETRY_CACHE_DIR }}
           key: test-poetry
       - name: Install Nix
-        uses: cachix/install-nix-action@v25
+        uses: cachix/install-nix-action@v26
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.19.3/install
+          install_url: https://releases.nixos.org/nix/nix-2.20.5/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
