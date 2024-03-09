@@ -39,16 +39,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.1.1
       - name: Setup Nix cache
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.1
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: example-nix
       - name: Install Nix
-        uses: cachix/install-nix-action@v25
+        uses: cachix/install-nix-action@v26
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.19.3/install
+          install_url: https://releases.nixos.org/nix/nix-2.20.5/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
@@ -88,7 +88,7 @@ jobs:
           archive.tar
           ./
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.3.0
+        uses: actions/upload-artifact@v4.3.1
         with:
           name: build
           path: archive.tar
@@ -113,7 +113,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4.1.1
+        uses: actions/download-artifact@v4.1.4
         with:
           name: build
       - name: Extract archive

@@ -40,21 +40,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.1.1
       - name: Setup Nix cache
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.1
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: docs-nix
       - name: Setup docs modules cache
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.1
         with:
           path: docs/node_modules/
           key: docs-modules
       - name: Install Nix
-        uses: cachix/install-nix-action@v25
+        uses: cachix/install-nix-action@v26
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.19.3/install
+          install_url: https://releases.nixos.org/nix/nix-2.20.5/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
@@ -78,7 +78,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4.0.0
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3.0.0
+        uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: docs/build/
       # See: https://github.com/cachix/install-nix-action/issues/56
@@ -112,4 +112,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.3
+        uses: actions/deploy-pages@v4.0.4
