@@ -4,9 +4,9 @@
   "scripts": {
     "docs": "docusaurus",
     "update": "ncu --peer --doctor --upgrade && npm i --no-audit --no-fund",
-    "postupdate": "rm -rf .tmp/",
+    "postupdate": "rm --recursive --force .tmp/",
     "test": "docusaurus build --out-dir .tmp/",
-    "posttest": "rm -rf .tmp/"
+    "posttest": "rm --recursive --force .tmp/"
   },
   "engines": {
     "node": ">=18.0"
