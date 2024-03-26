@@ -97,7 +97,7 @@ jobs:
         if: "!cancelled()"
         run: >
           mkdir
-          -p
+          --parents
           ${{ env.NIX_CACHE_DIR }}
           &&
           nix-store
@@ -119,7 +119,7 @@ jobs:
       - name: Extract archive
         run: >
           mkdir
-          -p
+          --parents
           build/
           &&
           tar
@@ -175,7 +175,7 @@ jobs:
       - name: Copy build output
         run: >
           cp
-          -r
+          --recursive
           build/.
           example/
       - name: Add changes

@@ -2,10 +2,10 @@
 
 REMOTE_USER="${REMOTE_USER:?}"
 REMOTE_USER_PASSWD="$(getent passwd "${REMOTE_USER}")"
-REMOTE_USER_HOME="$(echo "${REMOTE_USER_PASSWD}" | cut -d: -f6)"
+REMOTE_USER_HOME="$(echo "${REMOTE_USER_PASSWD}" | cut --delimiter ':' --fields 6)"
 
 # Setup default shell
-chsh -s /usr/bin/zsh "${REMOTE_USER}"
+chsh --shell /usr/bin/zsh "${REMOTE_USER}"
 
 # Setup direnv
 cat <<EOF >>"${REMOTE_USER_HOME}/.bashrc"
@@ -26,17 +26,17 @@ eval "\$(starship init zsh)"
 EOF
 
 # Setup secrets directory
-mkdir -p /secrets/
+mkdir --parents /secrets/
 
-chown -R "${REMOTE_USER}:" /secrets/
+chown --recursive "${REMOTE_USER}:" /secrets/
 
 # Setup shell history cache
-mkdir -p /persist/shellhistory/
+mkdir --parents /persist/shellhistory/
 
 touch /persist/shellhistory/.bash_history
 touch /persist/shellhistory/.zsh_history
 
-chown -R "${REMOTE_USER}:" /persist/shellhistory/
+chown --recursive "${REMOTE_USER}:" /persist/shellhistory/
 
 cat <<EOF >>"${REMOTE_USER_HOME}/.bashrc"
 export HISTFILE=/persist/shellhistory/.bash_history
@@ -47,9 +47,9 @@ export HISTFILE=/persist/shellhistory/.zsh_history
 EOF
 
 # Setup trunk cache
-mkdir -p /cache/trunk/
+mkdir --parents /cache/trunk/
 
-chown -R "${REMOTE_USER}:" /cache/trunk/
+chown --recursive "${REMOTE_USER}:" /cache/trunk/
 
 cat <<EOF >>"${REMOTE_USER_HOME}/.bashrc"
 export TRUNK_CACHE=/cache/trunk/

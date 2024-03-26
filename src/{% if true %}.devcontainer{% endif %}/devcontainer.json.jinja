@@ -4,7 +4,12 @@
     // Docker context to use, relative to this file
     "context": "image/",
     // Dockerfile to use, relative to this file
-    "dockerfile": "image/Dockerfile"
+    "dockerfile": "image/Dockerfile",
+    // Build options
+    "options": [
+      // Use host network
+      "--network=host"
+    ]
   },
   // Tool-specific settings
   "customizations": {
