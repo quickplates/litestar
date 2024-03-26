@@ -25,7 +25,7 @@ if [[ -f "${_cache}/archive.nar" ]]; then
 fi
 
 # We need to create necessary directories first
-mkdir -p "${_build}/closure/"
+mkdir --parents "${_build}/closure/"
 
 # Save system to variable so we can reuse it easily
 _system=$(nix eval --impure --raw --expr 'builtins.currentSystem')

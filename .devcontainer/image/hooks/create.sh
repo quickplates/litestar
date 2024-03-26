@@ -13,10 +13,10 @@ if [[ -s /secrets/.ghtoken && -r /secrets/.ghtoken ]]; then
 	configfile="${confighome}/nix/nix.conf"
 	tmpfile="$(mktemp)"
 
-	mkdir -p "$(dirname "${configfile}")"
+	mkdir --parents "$(dirname "${configfile}")"
 	touch "${configfile}"
 
-	if grep -q extra-access-tokens "${configfile}"; then
+	if grep --quiet extra-access-tokens "${configfile}"; then
 		sed "s|extra-access-tokens.*|extra-access-tokens = github.com=${token}|" "${configfile}" >"${tmpfile}"
 		cat "${tmpfile}" >"${configfile}"
 		rm "${tmpfile}"
