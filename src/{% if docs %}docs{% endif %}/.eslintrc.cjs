@@ -17,7 +17,7 @@ module.exports = {
     // Use recommended docusaurus rules
     "plugin:@docusaurus/recommended",
 
-    // Use recommended docusaurus rules
+    // Turn off rules that might conflict with Prettier
     "prettier",
   ],
 
