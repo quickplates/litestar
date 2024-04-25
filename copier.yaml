@@ -24,7 +24,7 @@ description:
 reponame:
   type: str
   help: The name of the repository
-  default: "app-{{ appname }}"
+  default: "{{ appname }}"
 
 repourl:
   type: str
@@ -66,7 +66,7 @@ registry:
 imagename:
   type: str
   help: The name of the Docker image
-  default: "apps/{{ appname }}"
+  default: "{{ appname }}"
   when: "{{ registry }}"
 
 events:
