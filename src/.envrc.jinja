@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # reload when these files change
-watch_file flake.lock ./*.nix poetry.lock poetry.toml pyproject.toml Taskfile.dist.yaml {taskfile,Taskfile}.{yaml,yml}
+watch_file flake.lock ./*.nix
 
 # activate the default development shell in the current shell
 # --accept-flake-config will accept the nix configuration from the flake without prompting
