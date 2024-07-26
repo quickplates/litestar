@@ -5,7 +5,7 @@ from pydantic import Field, RootModel
 
 from {{ importname }}.models.base import SerializableModel
 from {{ importname }}.models.data import Foo
-from {{ importname }}.time import naiveutcnow
+from {{ importname }}.utils.time import naiveutcnow
 
 TypeType = TypeVar("TypeType")
 DataType = TypeVar("DataType", bound=SerializableModel)

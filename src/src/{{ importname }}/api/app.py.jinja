@@ -56,9 +56,11 @@ class AppBuilder:
         ]
 
     def _build_initial_state(self) -> State:
+        config = self._config
+
         return State(
             {
-                "config": self._config,
+                "config": config,
             }
         )
 

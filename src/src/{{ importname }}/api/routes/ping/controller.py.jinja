@@ -1,11 +1,11 @@
 from litestar import Controller as BaseController
-from litestar import get
+from litestar import handlers
 from litestar.datastructures import CacheControlHeader
 from litestar.di import Provide
 from litestar.response import Response
 from litestar.status_codes import HTTP_204_NO_CONTENT
 
-from {{ importname }}.api.routes.ping.models import PingResponse
+from {{ importname }}.api.routes.ping import models as m
 from {{ importname }}.api.routes.ping.service import Service
 
 
@@ -26,12 +26,13 @@ class Controller(BaseController):
 
     dependencies = DependenciesBuilder().build()
 
-    @get(
+    @handlers.get(
         summary="Ping",
         description="Do nothing.",
         cache_control=CacheControlHeader(no_store=True),
         status_code=HTTP_204_NO_CONTENT,
     )
-    async def ping(self, service: Service) -> Response[PingResponse]:
-        response = await service.ping()
-        return Response(response)
+    async def ping(self, service: Service) -> Response[None]:
+        req = m.PingRequest()
+        await service.ping(req)
+        return Response(None)
