@@ -2,7 +2,7 @@ from collections.abc import AsyncGenerator
 
 from litestar.channels import ChannelsPlugin
 
-from {{ importname }}.api.routes.sse.models import SubscribeMessage
+from {{ importname }}.api.routes.sse import models as m
 from {{ importname }}.models.events import ParsableEvent
 
 
@@ -12,10 +12,13 @@ class Service:
     def __init__(self, channels: ChannelsPlugin) -> None:
         self._channels = channels
 
-    async def subscribe(self) -> AsyncGenerator[SubscribeMessage, None]:
-        """Subscribe to app events."""
-
+    async def _subscribe(self) -> AsyncGenerator[str, None]:
         async with self._channels.start_subscription("events") as subscriber:
             async for event in subscriber.iter_events():
                 event = ParsableEvent.model_validate_json(event)
                 yield event.root.model_dump_json(by_alias=True)
+
+    async def subscribe(self, request: m.SubscribeRequest) -> m.SubscribeResponse:
+        """Subscribe to app events."""
+
+        return m.SubscribeResponse(messages=self._subscribe())
