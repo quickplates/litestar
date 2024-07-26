@@ -25,4 +25,5 @@ class Server:
             self._app,
             host=config.host,
             port=config.port,
+            forwarded_allow_ips=config.trusted,
         )

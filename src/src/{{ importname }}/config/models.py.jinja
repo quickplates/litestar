@@ -18,6 +18,11 @@ class ServerConfig(BaseModel):
         title="Port",
         description="Port to run the server on.",
     )
+    trusted: str | list[str] | None = Field(
+        "*",
+        title="Trusted",
+        description="Trusted IP addresses.",
+    )
 
 
 class Config(BaseConfig):
