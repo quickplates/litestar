@@ -5,27 +5,27 @@ description = "{{ description }}"
 authors = ["{{ accountname }} <{{ email }}>"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 # Pydantic is used to define data models
-pydantic = "^2.6"
-pydantic-settings = "^2.2"
+pydantic = "^2.8"
+pydantic-settings = "^2.3"
 # OmegaConf is used to load configuration
 omegaconf = "^2.3"
 # Typer and Rich are used to build CLIs
-typer = { version = "^0.9", extras = ["all"] }
+typer = "^0.12"
 rich = "^13.7"
 # Litestar and Uvicorn are used to build async APIs
-litestar = "^2.6"
-uvicorn = { version = "^0.28", extras = ["standard"] }
+litestar = "^2.10"
+uvicorn = { version = "^0.30", extras = ["standard"] }
 # For correct handling of timezones
 tzdata = "*"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.1"
+pytest = "^8.3"
 # Asyncio support for pytest
 pytest-asyncio = "^0.23"
 # Running dependent services in containers
-testcontainers = "^4.0"
+testcontainers = "^4.7"
 
 [tool.poetry.scripts]
 # Register CLI
