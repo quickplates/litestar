@@ -1,10 +1,10 @@
 version: 0.1
 cli:
-  version: 1.20.1
+  version: 1.22.2
 plugins:
   sources:
     - id: trunk
-      ref: v1.4.4
+      ref: v1.6.1
       uri: https://github.com/trunk-io/plugins
 runtimes:
   enabled:
@@ -13,7 +13,7 @@ runtimes:
     # Needed for {% if docs %}eslint, {% endif %}markdownlint, prettier{% if docs %}, svgo{% endif %}
     - node@21.7.1
     # Needed for black, ruff, yamllint
-    - python@3.11.6
+    - python@3.12.2
 lint:
   ignore:
     - linters: [ALL]
@@ -59,7 +59,7 @@ lint:
     # GitHub Actions linting
     - actionlint@1.6.27
     # Python formatting
-    - black@24.2.0
+    - black@24.4.2
     {%- if docs %}
     # JavaScript linting
     - eslint@8.57.0
@@ -79,7 +79,7 @@ lint:
     # JS, JSON, YAML, Markdown formatting
     - prettier@3.0.2
     # Python linting
-    - ruff@0.3.2
+    - ruff@0.5.5
     # Shell linting
     - shellcheck@0.10.0
     # Shell formatting
