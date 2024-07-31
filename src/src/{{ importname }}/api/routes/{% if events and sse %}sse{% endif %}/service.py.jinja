@@ -12,7 +12,7 @@ class Service:
     def __init__(self, channels: ChannelsPlugin) -> None:
         self._channels = channels
 
-    async def _subscribe(self) -> AsyncGenerator[str, None]:
+    async def _subscribe(self) -> AsyncGenerator[str]:
         async with self._channels.start_subscription("events") as subscriber:
             async for event in subscriber.iter_events():
                 event = ParsableEvent.model_validate_json(event)
