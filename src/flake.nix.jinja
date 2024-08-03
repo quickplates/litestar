@@ -44,6 +44,7 @@
         coreutils = pkgs.coreutils;
         trunk = pkgs.trunk-io;
         poetry = pkgs.poetry;
+        cacert = pkgs.cacert;
         copier = pkgs.copier;
         tini = pkgs.tini;
         su-exec = pkgs.su-exec;
@@ -79,8 +80,11 @@
               coreutils
               trunk
               poetry
+              cacert
               copier
             ];
+
+            EXTRAPYTHONPATH = "${python}/${python.sitePackages}";
 
             shellHook = ''
               export TMPDIR=/tmp
@@ -95,6 +99,7 @@
               task
               coreutils
               poetry
+              cacert
             ];
 
             shellHook = ''
@@ -108,9 +113,12 @@
             packages = [
               python
               poetry
+              cacert
               tini
               su-exec
             ];
+
+            EXTRAPYTHONPATH = "${python}/${python.sitePackages}";
 
             shellHook = ''
               export TMPDIR=/tmp
@@ -156,7 +164,10 @@
               task
               coreutils
               poetry
+              cacert
             ];
+
+            EXTRAPYTHONPATH = "${python}/${python.sitePackages}";
 
             shellHook = ''
               export TMPDIR=/tmp

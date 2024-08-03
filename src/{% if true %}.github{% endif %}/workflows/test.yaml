@@ -13,6 +13,7 @@ name: Test
       - .github/workflows/test.yaml
       - src/**
       - tests/**
+      - .env.python
       - flake.lock
       - "*.nix"
       - poetry.lock
@@ -28,6 +29,7 @@ name: Test
       - .github/workflows/test.yaml
       - src/**
       - tests/**
+      - .env.python
       - flake.lock
       - "*.nix"
       - poetry.lock

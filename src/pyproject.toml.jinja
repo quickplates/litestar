@@ -1,4 +1,5 @@
 [tool.poetry]
+package-mode = true
 name = "{{ appname }}"
 version = "0.1.0"
 description = "{{ description }}"
@@ -17,6 +18,8 @@ litestar = "^2.10"
 uvicorn = { version = "^0.30", extras = ["standard"] }
 # For correct handling of timezones
 tzdata = "*"
+# Environment variables loader
+python-dotenv = "^1.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3"
