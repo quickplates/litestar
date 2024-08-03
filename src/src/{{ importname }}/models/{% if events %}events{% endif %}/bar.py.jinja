@@ -1,0 +1,19 @@
+from typing import Literal
+
+from {{ importname }}.models.base import SerializableModel
+from {{ importname }}.models.events import types as t
+
+
+class BarEventData(SerializableModel):
+    """Data of a bar event."""
+
+    bar: str
+    """Bar field."""
+
+
+class BarEvent(SerializableModel):
+    """Bar event."""
+
+    type: t.TypeFieldType[Literal["bar"]] = "bar"
+    created_at: t.CreatedAtFieldType
+    data: t.DataFieldType[BarEventData]
