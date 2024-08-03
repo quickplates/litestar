@@ -44,3 +44,19 @@ class Controller(BaseController):
         await service.ping(req)
 
         return Response(None)
+
+    @handlers.head(
+        summary="Ping headers",
+        cache_control=CacheControlHeader(
+            no_store=True,
+        ),
+        status_code=HTTP_204_NO_CONTENT,
+    )
+    async def headping(self, service: Service) -> Response[None]:
+        """Ping headers."""
+
+        req = m.HeadPingRequest()
+
+        await service.headping(req)
+
+        return Response(None)
