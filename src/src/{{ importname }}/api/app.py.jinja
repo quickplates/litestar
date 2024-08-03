@@ -1,3 +1,5 @@
+from collections.abc import Callable
+from contextlib import AbstractAsyncContextManager
 from importlib import metadata
 
 from litestar import Litestar, Router
@@ -30,24 +32,45 @@ class AppBuilder:
     def _get_debug(self) -> bool:
         return self._config.debug
 
+    def _build_lifespan(
+        self,
+    ) -> list[Callable[[Litestar], AbstractAsyncContextManager]]:
+        return []
+
     def _build_openapi_config(self) -> OpenAPIConfig:
         return OpenAPIConfig(
+            # Title of the app
             title="{{ appname }} app",
+            # Version of the app
             version=metadata.version("{{ importname }}"),
-            description="{{ description }}",
+            # Generate examples from models
+            create_examples=True,
+            # Description of the app
+            summary="{{ description }}",
+            # Use handler docstrings as operation descriptions
+            use_handler_docstrings=True,
+            # Endpoint to serve the OpenAPI docs from
+            path="/schema",
         )
     {%- if events %}
 
     def _build_channels_plugin(self) -> ChannelsPlugin:
         return ChannelsPlugin(
+            # Store events in memory (good only for single instance apps)
             backend=MemoryChannelsBackend(),
+            # Channels to handle
             channels=["events"],
+            # Don't allow channels outside of the list above
+            arbitrary_channels_allowed=False,
         )
     {%- endif %}
 
     def _build_pydantic_plugin(self) -> PydanticPlugin:
         return PydanticPlugin(
+            # Use aliases for serialization
             prefer_alias=True,
+            # Allow type coercion
+            validate_strict=False,
         )
 
     def _build_plugins(self) -> list[PluginProtocol]:
@@ -71,6 +94,7 @@ class AppBuilder:
         return Litestar(
             route_handlers=self._get_route_handlers(),
             debug=self._get_debug(),
+            lifespan=self._build_lifespan(),
             openapi_config=self._build_openapi_config(),
             plugins=self._build_plugins(),
             state=self._build_initial_state(),

@@ -31,7 +31,7 @@ def main() -> None:
         raise typer.Exit(2) from ex
 
     try:
-        server = Server(app, config)
+        server = Server(app, config.server)
         server.run()
     except Exception as ex:
         console.print("Failed to run server!")

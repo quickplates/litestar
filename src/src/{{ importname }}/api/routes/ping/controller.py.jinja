@@ -31,11 +31,16 @@ class Controller(BaseController):
 
     @handlers.get(
         summary="Ping",
-        description="Do nothing.",
-        cache_control=CacheControlHeader(no_store=True),
+        cache_control=CacheControlHeader(
+            no_store=True,
+        ),
         status_code=HTTP_204_NO_CONTENT,
     )
     async def ping(self, service: Service) -> Response[None]:
+        """Ping."""
+
         req = m.PingRequest()
+
         await service.ping(req)
+
         return Response(None)

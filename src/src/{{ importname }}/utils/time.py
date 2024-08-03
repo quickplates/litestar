@@ -1,16 +1,14 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from email.utils import format_datetime, parsedate_to_datetime
 
-from pydantic import AwareDatetime, NaiveDatetime
 
-
-def awareutcnow() -> AwareDatetime:
+def awareutcnow() -> datetime:
     """Return the current datetime in UTC with timezone information."""
 
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
-def naiveutcnow() -> NaiveDatetime:
+def naiveutcnow() -> datetime:
     """Return the current datetime in UTC without timezone information."""
 
     return awareutcnow().replace(tzinfo=None)
