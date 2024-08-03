@@ -1,14 +1,14 @@
-from dataclasses import dataclass
+from {{ importname }}.models.base import datamodel
 
 
-@dataclass(kw_only=True)
+@datamodel
 class PingRequest:
     """Request to ping."""
 
     pass
 
 
-@dataclass(kw_only=True)
+@datamodel
 class PingResponse:
     """Response for ping."""
 
