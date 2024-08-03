@@ -44,6 +44,7 @@
         coreutils = pkgs.coreutils;
         trunk = pkgs.trunk-io;
         poetry = pkgs.poetry;
+        cacert = pkgs.cacert;
         copier = pkgs.copier;
         tini = pkgs.tini;
         su-exec = pkgs.su-exec;
@@ -79,6 +80,7 @@
               coreutils
               trunk
               poetry
+              cacert
               copier
             ];
 
@@ -95,6 +97,7 @@
               task
               coreutils
               poetry
+              cacert
             ];
 
             shellHook = ''
@@ -108,6 +111,7 @@
             packages = [
               python
               poetry
+              cacert
               tini
               su-exec
             ];
@@ -156,6 +160,7 @@
               task
               coreutils
               poetry
+              cacert
             ];
 
             shellHook = ''

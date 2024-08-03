@@ -1,0 +1,21 @@
+---
+slug: /config
+title: Configuration
+---
+
+## Environment variables
+
+You can configure the app at runtime using various environment variables:
+
+- `{{ envprefix }}__SERVER__HOST` -
+  host to run the server on
+  (default: `0.0.0.0`)
+- `{{ envprefix }}__SERVER__PORT` -
+  port to run the server on
+  (default: `{{ port }}`)
+- `{{ envprefix }}__SERVER__TRUSTED` -
+  trusted IP addresses
+  (default: `*`)
+- `{{ envprefix }}__DEBUG` -
+  enable debug mode
+  (default: `false`)

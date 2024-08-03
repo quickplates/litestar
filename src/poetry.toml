@@ -1,3 +1,7 @@
 [virtualenvs]
 # Use venv in project directory
 in-project = true
+
+[virtualenvs.options]
+# Include system site packages
+system-site-packages = true

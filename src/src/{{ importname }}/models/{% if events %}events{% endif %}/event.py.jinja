@@ -1,0 +1,9 @@
+from typing import Annotated
+
+from pydantic import Field, RootModel
+
+from {{ importname }}.models.events.bar import BarEvent
+from {{ importname }}.models.events.foo import FooEvent
+
+Event = Annotated[FooEvent | BarEvent, Field(..., discriminator="type")]
+ParsableEvent = RootModel[Event]
