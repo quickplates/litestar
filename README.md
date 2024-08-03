@@ -44,8 +44,8 @@ copier copy gh:quickplates/litestar .
 - automatic releases on [`GitHub Container Registry`](https://ghcr.io)
 - dependency management with [`Poetry`](https://python-poetry.org)
 - testing with [`pytest`](https://pytest.org)
-- versatile configuration with [`OmegaConf`](https://omegaconf.readthedocs.io)
-  and [`Pydantic`](https://docs.pydantic.dev/latest)
+- versatile configuration with
+  [`Pydantic Settings`](https://docs.pydantic.dev/latest/concepts/pydantic_settings)
 - pleasant command line interfaces with [`Typer`](https://typer.tiangolo.com)
   and [`Rich`](https://rich.readthedocs.io)
 - support for [`Server-Sent Events`](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
