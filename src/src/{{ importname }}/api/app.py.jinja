@@ -27,6 +27,9 @@ class AppBuilder:
     def _get_route_handlers(self) -> list[Router]:
         return [router]
 
+    def _get_debug(self) -> bool:
+        return self._config.debug
+
     def _build_openapi_config(self) -> OpenAPIConfig:
         return OpenAPIConfig(
             title="{{ appname }} app",
@@ -67,6 +70,7 @@ class AppBuilder:
     def build(self) -> Litestar:
         return Litestar(
             route_handlers=self._get_route_handlers(),
+            debug=self._get_debug(),
             openapi_config=self._build_openapi_config(),
             plugins=self._build_plugins(),
             state=self._build_initial_state(),

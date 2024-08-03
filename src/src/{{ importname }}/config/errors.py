@@ -1,11 +1,4 @@
 class ConfigError(Exception):
-    """Base class for config errors."""
+    """Raised when a config error occurs."""
 
     pass
-
-
-class ConfigParseError(ConfigError, ValueError):
-    """Raised when config parsing fails."""
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__("Failed to parse config!", *args, **kwargs)

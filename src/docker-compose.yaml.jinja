@@ -7,4 +7,5 @@ services:
       - "{{ envprefix }}__SERVER__HOST=${ {{- envprefix }}__SERVER__HOST:-0.0.0.0}"
       - "{{ envprefix }}__SERVER__PORT=${ {{- envprefix }}__SERVER__PORT:-{{ port -}} }"
       - "{{ envprefix }}__SERVER__TRUSTED=${ {{- envprefix }}__SERVER__TRUSTED:-*}"
+      - "{{ envprefix }}__DEBUG=${ {{- envprefix }}__DEBUG:-false}"
     network_mode: host
