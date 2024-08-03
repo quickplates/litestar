@@ -6,13 +6,18 @@ from litestar.response import ServerSentEvent
 
 from {{ importname }}.api.routes.sse import models as m
 from {{ importname }}.api.routes.sse.service import Service
+from {{ importname }}.services.events.service import EventsService
 
 
 class DependenciesBuilder:
     """Builder for the dependencies of the controller."""
 
     async def _build_service(self, channels: ChannelsPlugin) -> Service:
-        return Service(channels)
+        return Service(
+            events=EventsService(
+                channels=channels,
+            ),
+        )
 
     def build(self) -> dict[str, Provide]:
         return {
