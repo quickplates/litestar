@@ -1,24 +1,40 @@
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Generator
+from contextlib import contextmanager
 
-from litestar.channels import ChannelsPlugin
-
+from {{ importname }}.api.routes.sse import errors as e
 from {{ importname }}.api.routes.sse import models as m
-from {{ importname }}.models.events.event import ParsableEvent
+from {{ importname }}.services.events import errors as ee
+from {{ importname }}.services.events import models as em
+from {{ importname }}.services.events.service import EventsService
 
 
 class Service:
     """Service for the sse endpoint."""
 
-    def __init__(self, channels: ChannelsPlugin) -> None:
-        self._channels = channels
+    def __init__(self, events: EventsService) -> None:
+        self._events = events
+
+    @contextmanager
+    def _handle_errors(self) -> Generator[None]:
+        try:
+            yield
+        except ee.ServiceError as ex:
+            raise e.ServiceError(str(ex)) from ex
 
     async def _subscribe(self) -> AsyncGenerator[str]:
-        async with self._channels.start_subscription("events") as subscriber:
-            async for event in subscriber.iter_events():
-                event = ParsableEvent.model_validate_json(event)
-                yield event.root.model_dump_json(by_alias=True)
+        req = em.SubscribeRequest()
+
+        with self._handle_errors():
+            res = await self._events.subscribe(req)
+
+            async for event in res.events:
+                yield event.model_dump_json(by_alias=True)
 
     async def subscribe(self, request: m.SubscribeRequest) -> m.SubscribeResponse:
-        """Subscribe to app events."""
+        """Subscribe to event messages."""
 
-        return m.SubscribeResponse(messages=self._subscribe())
+        messages = self._subscribe()
+
+        return m.SubscribeResponse(
+            messages=messages,
+        )

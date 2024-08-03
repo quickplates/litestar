@@ -7,13 +7,16 @@ from litestar.status_codes import HTTP_204_NO_CONTENT
 
 from {{ importname }}.api.routes.ping import models as m
 from {{ importname }}.api.routes.ping.service import Service
+from {{ importname }}.services.ping.service import PingService
 
 
 class DependenciesBuilder:
     """Builder for the dependencies of the controller."""
 
     async def _build_service(self) -> Service:
-        return Service()
+        return Service(
+            ping=PingService(),
+        )
 
     def build(self) -> dict[str, Provide]:
         return {
