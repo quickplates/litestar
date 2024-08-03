@@ -30,3 +30,8 @@ class Service:
             await self._ping.ping(req)
 
         return m.PingResponse()
+
+    async def headping(self, request: m.HeadPingRequest) -> m.HeadPingResponse:
+        """Ping headers."""
+
+        return m.HeadPingResponse()
