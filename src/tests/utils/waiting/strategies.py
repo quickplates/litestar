@@ -29,8 +29,8 @@ class MaxRetriesStrategy(WaitStrategy):
         for _ in range(self._retries):
             try:
                 await condition.check()
-            except Exception as e:
-                exceptions.append(e)
+            except Exception as ex:
+                exceptions.append(ex)
             else:
                 return
 
@@ -61,8 +61,8 @@ class TimeoutStrategy(WaitStrategy):
         while self._get_current_time() - start < self._timeout:
             try:
                 await condition.check()
-            except Exception as e:
-                exceptions.append(e)
+            except Exception as ex:
+                exceptions.append(ex)
             else:
                 return
 
