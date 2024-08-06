@@ -12,5 +12,5 @@ class ConfigBuilder:
 
         try:
             return Config()
-        except ValidationError as e:
-            raise ConfigError from e
+        except ValidationError as ex:
+            raise ConfigError from ex

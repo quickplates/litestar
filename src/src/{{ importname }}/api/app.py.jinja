@@ -43,8 +43,6 @@ class AppBuilder:
             title="{{ appname }} app",
             # Version of the app
             version=metadata.version("{{ importname }}"),
-            # Generate examples from models
-            create_examples=True,
             # Description of the app
             summary="{{ description }}",
             # Use handler docstrings as operation descriptions
