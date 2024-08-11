@@ -1,3 +1,4 @@
+import builtins
 from collections.abc import Generator
 from contextlib import contextmanager
 from typing import Any
@@ -10,8 +11,8 @@ from {{ importname }}.api.exceptions import BadRequestException
 class Validator[T]:
     """Validates input data."""
 
-    def __init__(self) -> None:
-        self.Model = RootModel[T]
+    def __init__(self, type: builtins.type[T]) -> None:
+        self.Model = RootModel[type]
 
     @contextmanager
     def _handle_errors(self) -> Generator[None]:
@@ -24,12 +25,10 @@ class Validator[T]:
         """Validate an object."""
 
         with self._handle_errors():
-            self.Model.model_rebuild()
             return self.Model.model_validate(value).root
 
     def json(self, value: str) -> T:
         """Validate a JSON string."""
 
         with self._handle_errors():
-            self.Model.model_rebuild()
             return self.Model.model_validate_json(value).root
