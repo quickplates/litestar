@@ -1,12 +1,12 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 0.7.1
+_commit: 0.8.0
 _src_path: gh:quickplates/meta
 accountname: quickplates
-description: Litestar app template 🌠
+description: Litestar service template 🌠
 example: true
 exampleaccountname: quickplates
-exampledescription: Litestar app example 🌠
+exampledescription: Litestar service example 🌠
 examplereponame: litestar-example
 reponame: litestar
 repourl: https://github.com/quickplates/litestar
-type: app
+type: service

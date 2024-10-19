@@ -216,7 +216,7 @@ tasks:
         pytest
         {{ '{{ .CLI_ARGS }}' }}
   run:
-    desc: Run the app
+    desc: Run the service
     interactive: true
     cmds:
       - task: install-internal
@@ -229,7 +229,7 @@ tasks:
         .env.python
         run
         --
-        {{ appname }}
+        {{ servicename }}
         {{ '{{ .CLI_ARGS }}' }}
   docker:
     desc: Run in docker container

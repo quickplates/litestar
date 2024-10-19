@@ -1,6 +1,6 @@
 [tool.poetry]
 package-mode = true
-name = "{{ appname }}"
+name = "{{ servicename }}"
 version = "0.1.0"
 description = "{{ description }}"
 authors = ["{{ accountname }} <{{ email }}>"]
@@ -30,7 +30,7 @@ testcontainers = "^4.7"
 
 [tool.poetry.scripts]
 # Register CLI
-{{ appname }} = "{{ importname }}.__main__:cli"
+{{ servicename }} = "{{ importname }}.__main__:cli"
 
 # See: https://python-poetry.org/docs/pyproject/#poetry-and-pep-517
 [build-system]
