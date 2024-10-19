@@ -71,11 +71,11 @@ jobs:
           --data
           'email=quickplates@mail.spietras.dev'
           --data
-          'appname=litestar-example'
+          'servicename=litestar-example'
           --data
           'reponame=litestar-example'
           --data
-          'description=Litestar app example 🌠'
+          'description=Litestar service example 🌠'
       # Create archive to retain file permissions
       - name: Create archive
         run: >

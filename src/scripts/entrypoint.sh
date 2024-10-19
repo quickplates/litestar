@@ -6,4 +6,4 @@
 
 # Run as non-root user
 # Use tini to handle signals
-exec su-exec app tini -- "$@"
+exec su-exec service tini -- "$@"

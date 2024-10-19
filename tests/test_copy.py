@@ -11,8 +11,8 @@ def data() -> dict[str, str]:
     return {
         "accountname": "foo",
         "email": "test@example.org",
-        "appname": "foo",
-        "description": "Example app",
+        "servicename": "foo",
+        "description": "Example service",
     }
 
 

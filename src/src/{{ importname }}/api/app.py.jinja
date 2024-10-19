@@ -39,11 +39,11 @@ class AppBuilder:
 
     def _build_openapi_config(self) -> OpenAPIConfig:
         return OpenAPIConfig(
-            # Title of the app
-            title="{{ appname }} app",
-            # Version of the app
+            # Title of the service
+            title="{{ servicename }}",
+            # Version of the service
             version=metadata.version("{{ importname }}"),
-            # Description of the app
+            # Description of the service
             summary="{{ description }}",
             # Use handler docstrings as operation descriptions
             use_handler_docstrings=True,
@@ -54,7 +54,7 @@ class AppBuilder:
 
     def _build_channels_plugin(self) -> ChannelsPlugin:
         return ChannelsPlugin(
-            # Store events in memory (good only for single instance apps)
+            # Store events in memory (good only for single instance services)
             backend=MemoryChannelsBackend(),
             # Channels to handle
             channels=["events"],

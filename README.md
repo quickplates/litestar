@@ -2,7 +2,7 @@
 
 <div align="center">
 
-Litestar app template 🌠
+Litestar service template 🌠
 
 [![Lint](https://github.com/quickplates/litestar/actions/workflows/lint.yaml/badge.svg)](https://github.com/quickplates/litestar/actions/workflows/lint.yaml)
 [![Test](https://github.com/quickplates/litestar/actions/workflows/test.yaml/badge.svg)](https://github.com/quickplates/litestar/actions/workflows/test.yaml)
@@ -15,7 +15,7 @@ Litestar app template 🌠
 ## 💡 About
 
 This repository contains a [`copier`](https://copier.readthedocs.io) template
-that can be used to create [`Litestar`](https://litestar.dev) apps.
+that can be used to create [`Litestar`](https://litestar.dev) services.
 
 You can view the example of project generated from this template
 [**here**](https://github.com/quickplates/litestar-example).
