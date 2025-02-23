@@ -41,7 +41,7 @@ jobs:
   test:
     name: Test
     # Pin version of Ubuntu to avoid breaking changes
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     # Use reasonable timeout to avoid stuck workflows
     timeout-minutes: 30
     env:
@@ -52,23 +52,23 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.2
       - name: Setup Nix cache
-        uses: actions/cache@v4.0.1
+        uses: actions/cache@v4.2.1
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: test-nix
       - name: Setup Poetry cache
-        uses: actions/cache@v4.0.1
+        uses: actions/cache@v4.2.1
         with:
           path: ${{ env.POETRY_CACHE_DIR }}
           key: test-poetry
       - name: Install Nix
-        uses: cachix/install-nix-action@v26
+        uses: cachix/install-nix-action@v30
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.20.5/install
+          install_url: https://releases.nixos.org/nix/nix-2.26.2/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'

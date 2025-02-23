@@ -3,7 +3,7 @@ from litestar.status_codes import HTTP_204_NO_CONTENT
 from litestar.testing import AsyncTestClient
 
 
-@pytest.mark.asyncio(scope="session")
+@pytest.mark.asyncio(loop_scope="session")
 async def test_get(client: AsyncTestClient) -> None:
     """Test if GET /ping returns correct response."""
 
@@ -20,7 +20,7 @@ async def test_get(client: AsyncTestClient) -> None:
     assert len(content) == 0
 
 
-@pytest.mark.asyncio(scope="session")
+@pytest.mark.asyncio(loop_scope="session")
 async def test_head(client: AsyncTestClient) -> None:
     """Test if HEAD /ping returns correct response."""
 

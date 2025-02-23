@@ -24,7 +24,7 @@ def app(config: Config) -> Litestar:
     return AppBuilder(config).build()
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(loop_scope="session", scope="session")
 async def client(app: Litestar) -> AsyncGenerator[AsyncTestClient]:
     """Reusable test client."""
 

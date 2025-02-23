@@ -7,7 +7,7 @@ from plumbum import local
 from tests.utils import CWD, SandboxedGitRepo
 
 
-@pytest.fixture()
+@pytest.fixture
 def data() -> dict[str, str]:
     """Return a dictionary with the data to be used in the template."""
 
@@ -31,7 +31,7 @@ def data() -> dict[str, str]:
     }
 
 
-@pytest.fixture()
+@pytest.fixture
 def copied_template_directory(
     tmp_path_factory: pytest.TempPathFactory,
     cloned_template_directory: Path,
