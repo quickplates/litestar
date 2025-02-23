@@ -1,5 +1,5 @@
 # Use generic base image with Nix installed
-FROM nixos/nix:2.20.5 AS env
+FROM nixos/nix:2.26.2 AS env
 
 # Configure Nix
 RUN echo "extra-experimental-features = nix-command flakes" >> /etc/nix/nix.conf
@@ -22,7 +22,7 @@ RUN \
     ./scripts/env.sh runtime build/ /nix-store-cache/
 
 # Ubuntu is probably the safest choice for a runtime container right now
-FROM ubuntu:23.10
+FROM ubuntu:24.04
 
 # Use bash as default shell
 SHELL ["/bin/bash", "-c"]

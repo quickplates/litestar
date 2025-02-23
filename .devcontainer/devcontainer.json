@@ -249,15 +249,15 @@
     "ghcr.io/devcontainers/features/nix:1.2.0": {
       // Enable experimental features
       "extraNixConfig": "experimental-features = nix-command flakes",
-      "version": "2.20.5"
+      "version": "2.26.2"
     },
     // Install Direnv
-    "ghcr.io/devcontainers-contrib/features/direnv:1.0.2": {
-      "version": "2.34.0"
+    "ghcr.io/devcontainers-extra/features/direnv:1.0.2": {
+      "version": "2.35.0"
     },
     // Install Starship
-    "ghcr.io/devcontainers-contrib/features/starship:1.0.9": {
-      "version": "1.17.1"
+    "ghcr.io/devcontainers-extra/features/starship:1.0.9": {
+      "version": "1.22.1"
     }
   },
   // Volumes

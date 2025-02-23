@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+      url = "github:NixOS/nixpkgs/nixos-24.11";
     };
 
     flake-parts = {
@@ -35,7 +35,7 @@
         system,
         ...
       }: let
-        python = pkgs.python311.withPackages (ps: [ps.pytest ps.plumbum]);
+        python = pkgs.python312.withPackages (ps: [ps.pytest ps.plumbum]);
         nil = pkgs.nil;
         task = pkgs.go-task;
         coreutils = pkgs.coreutils;

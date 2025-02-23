@@ -6,14 +6,14 @@ from plumbum import local
 from tests.utils import CWD, IgnoreGitConfig, SandboxedGitRepo
 
 
-@pytest.fixture()
+@pytest.fixture
 def root_directory() -> Path:
     """Return the root directory of the project."""
 
     return Path(__file__).parent.parent.resolve()
 
 
-@pytest.fixture()
+@pytest.fixture
 def tracked_files(root_directory: Path) -> list[Path]:
     """Return a list of all tracked files (including unstaged) in the project."""
 
@@ -27,7 +27,7 @@ def tracked_files(root_directory: Path) -> list[Path]:
     return [Path(path) for path in all]
 
 
-@pytest.fixture()
+@pytest.fixture
 def cloned_template_directory(
     tmp_path_factory: pytest.TempPathFactory,
     root_directory: Path,

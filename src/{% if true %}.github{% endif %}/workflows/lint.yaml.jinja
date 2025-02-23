@@ -17,7 +17,7 @@ jobs:
   lint:
     name: Lint
     # Pin version of Ubuntu to avoid breaking changes
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     # Use reasonable timeout to avoid stuck workflows
     timeout-minutes: 10
     env:
@@ -28,7 +28,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.2
       # We need to fetch upstream so Trunk can compare against it
       - name: Fetch upstream
         if: github.event_name == 'pull_request'
@@ -38,28 +38,28 @@ jobs:
           origin
           {{ '${{ github.event.pull_request.base.ref }}' }}
       - name: Setup Nix cache
-        uses: actions/cache@v4.0.1
+        uses: actions/cache@v4.2.1
         id: cache-nix
         with:
           path: {{ '${{ env.NIX_CACHE_DIR }}' }}
           key: lint-nix
       - name: Setup Trunk cache
-        uses: actions/cache@v4.0.1
+        uses: actions/cache@v4.2.1
         with:
           path: {{ '${{ env.TRUNK_CACHE_DIR }}' }}
           key: lint-trunk
       {%- if docs %}
       - name: Setup docs modules cache
-        uses: actions/cache@v4.0.1
+        uses: actions/cache@v4.2.1
         with:
           path: docs/node_modules/
           key: lint-docs-modules
       {%- endif %}
       - name: Install Nix
-        uses: cachix/install-nix-action@v26
+        uses: cachix/install-nix-action@v30
         with:
           github_access_token: {{ '${{ github.token }}' }}
-          install_url: https://releases.nixos.org/nix/nix-2.20.5/install
+          install_url: https://releases.nixos.org/nix/nix-2.26.2/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'

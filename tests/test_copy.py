@@ -4,7 +4,7 @@ import copier
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture
 def data() -> dict[str, str]:
     """Return a dictionary with the data to be used in the template."""
 

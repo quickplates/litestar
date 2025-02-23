@@ -8,14 +8,14 @@ authors = ["{{ accountname }} <{{ email }}>"]
 [tool.poetry.dependencies]
 python = "^3.12"
 # Pydantic is used to define data models
-pydantic = "^2.8"
-pydantic-settings = "^2.4"
+pydantic = "^2.10"
+pydantic-settings = "^2.8"
 # Typer and Rich are used to build CLIs
-typer = "^0.12"
-rich = "^13.7"
+typer = "^0.15"
+rich = "^13.9"
 # Litestar and Uvicorn are used to build async APIs
-litestar = "^2.10"
-uvicorn = { version = "^0.30", extras = ["standard"] }
+litestar = "^2.14"
+uvicorn = { version = "^0.34", extras = ["standard"] }
 # For correct handling of timezones
 tzdata = "*"
 # Environment variables loader
@@ -24,13 +24,17 @@ python-dotenv = "^1.0"
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3"
 # Asyncio support for pytest
-pytest-asyncio = "^0.23"
+pytest-asyncio = "^0.25"
 # Running dependent services in containers
-testcontainers = "^4.7"
+testcontainers = "^4.9"
 
 [tool.poetry.scripts]
 # Register CLI
 {{ servicename }} = "{{ importname }}.__main__:cli"
+
+[tool.pytest.ini_options]
+# Remove in the future: https://github.com/pytest-dev/pytest-asyncio/issues/924
+asyncio_default_fixture_loop_scope = "function"
 
 # See: https://python-poetry.org/docs/pyproject/#poetry-and-pep-517
 [build-system]

@@ -1,19 +1,19 @@
 version: 0.1
 cli:
-  version: 1.20.1
+  version: 1.22.8
 plugins:
   sources:
     - id: trunk
-      ref: v1.4.4
+      ref: v1.6.7
       uri: https://github.com/trunk-io/plugins
 runtimes:
   enabled:
     # Needed for gitleaks, shfmt
-    - go@1.22.1
+    - go@1.23.6
     # Needed for markdownlint, prettier, svgo
-    - node@21.7.1
+    - node@22.14.0
     # Needed for black, ruff, yamllint
-    - python@3.11.6
+    - python@3.12.2
 lint:
   ignore:
     - linters: [ALL]
@@ -61,34 +61,43 @@ lint:
             check
             path:${target}
           success_codes: [0, 1]
+    # Override default Prettier definition
+    - name: prettier
+      commands:
+        - name: format
+          run: >-
+            prettier
+            --no-error-on-unmatched-pattern
+            --write
+            ${target}
   enabled:
     # GitHub Actions linting
-    - actionlint@1.6.27
+    - actionlint@1.7.7
     # Python formatting
-    - black@24.2.0
+    - black@25.1.0
     # Check for whitespace errors
     - git-diff-check
     # Check for secrets in the code
-    - gitleaks@8.18.2
+    - gitleaks@8.23.3
     # Dockerfile linting
     - hadolint@2.12.0
     # Markdown linting
-    - markdownlint@0.39.0
+    - markdownlint@0.44.0
     # Nix formatting check
     - nix-fmt-check@SYSTEM
     # Nix flake check
     - nix-flake-check@SYSTEM
     # JS, JSON, YAML, Markdown formatting
-    - prettier@3.0.2
+    - prettier@3.5.1
     # Python linting
-    - ruff@0.3.2
+    - ruff@0.9.6
     # Shell linting
     - shellcheck@0.10.0
     # Shell formatting
-    - shfmt@3.8.0
+    - shfmt@3.10.0
     # SVG formatting
-    - svgo@3.2.0
+    - svgo@3.3.2
     # TOML formatting
-    - taplo@0.8.1
+    - taplo@0.9.3
     # YAML linting
     - yamllint@1.35.1
