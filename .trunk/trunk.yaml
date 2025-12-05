@@ -62,8 +62,8 @@ lint:
       environment:
         - name: PATH
           list:
-            # Inherit PATH to access Python
-            - ${env.PATH}
+            # Add Python to Path
+            - ${env.PYRIGHT_PYTHON}/bin
   enabled:
     # GitHub Actions linting
     - actionlint@1.7.8

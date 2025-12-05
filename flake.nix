@@ -74,6 +74,8 @@
               copier
             ];
 
+            PYRIGHT_PYTHON = pytest;
+
             shellHook = ''
               export TMPDIR=/tmp
             '';
@@ -104,6 +106,8 @@
               trunk
               pytest
             ];
+
+            PYRIGHT_PYTHON = pytest;
 
             shellHook = ''
               export TMPDIR=/tmp
