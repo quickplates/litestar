@@ -7,6 +7,9 @@ title: Configuration
 
 You can configure the service at runtime using various environment variables:
 
+- `{{ envprefix }}__DEBUG` -
+  enable debug mode
+  (default: `true`)
 - `{{ envprefix }}__SERVER__HOST` -
   host to run the server on
   (default: `0.0.0.0`)
@@ -16,6 +19,3 @@ You can configure the service at runtime using various environment variables:
 - `{{ envprefix }}__SERVER__TRUSTED` -
   trusted IP addresses
   (default: `*`)
-- `{{ envprefix }}__DEBUG` -
-  enable debug mode
-  (default: `true`)
