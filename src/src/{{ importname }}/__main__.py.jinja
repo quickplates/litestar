@@ -12,8 +12,7 @@ cli = CliBuilder().build()
 
 @cli.command()
 def main() -> None:
-    """Main entry point."""
-
+    """Run main entry point."""
     console = FallbackConsoleBuilder().build()
 
     try:

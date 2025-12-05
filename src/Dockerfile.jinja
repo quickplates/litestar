@@ -1,5 +1,5 @@
 # Use generic base image with Nix installed
-FROM nixos/nix:2.26.2 AS env
+FROM nixos/nix:2.28.5 AS env
 
 # Configure Nix
 RUN echo "extra-experimental-features = nix-command flakes" >> /etc/nix/nix.conf
@@ -21,8 +21,8 @@ RUN \
     --mount=type=cache,target=/root/.cache/nix/ \
     ./scripts/env.sh runtime build/ /nix-store-cache/
 
-# Ubuntu is probably the safest choice for a runtime container right now
-FROM ubuntu:24.04
+# Use ubuntu for runtime
+FROM ubuntu:24.04 AS runtime
 
 # Use bash as default shell
 SHELL ["/bin/bash", "-c"]
@@ -41,32 +41,38 @@ RUN useradd --create-home service
 COPY scripts/shell.sh scripts/shell.sh
 SHELL ["/service/scripts/shell.sh"]
 
-# Copy Poetry files
-COPY poetry.lock poetry.toml pyproject.toml ./
+# Copy project management files
+COPY uv.lock pyproject.toml ./
 
 # Install dependencies only
-# hadolint ignore=SC2239
 RUN \
-    # Mount Poetry cache
-    --mount=type=cache,target=/root/.cache/pypoetry/ \
-    poetry install --no-interaction --no-root --only main
+    # Mount uv cache
+    --mount=type=cache,target=/root/.cache/uv/ \
+    uv sync \
+        --compile-bytecode \
+        --link-mode=copy \
+        --locked \
+        --no-default-groups \
+        --no-editable \
+        --no-install-project
 
 # Copy source
 COPY src/ src/
 
-# Build wheel and install with pip to force non-editable install
-# See: https://github.com/python-poetry/poetry/issues/1382
-# hadolint ignore=SC2239
-RUN poetry build --no-interaction --format wheel && \
-    poetry run -- python -m pip install --no-deps --no-index --no-cache-dir dist/*.whl && \
-    rm --recursive --force dist/ ./*.egg-info
-
-# Copy file with environment variables for Python
-COPY .env.python .env.python
+# Install the project in non-editable mode
+RUN \
+    # Mount uv cache
+    --mount=type=cache,target=/root/.cache/uv/ \
+    uv sync \
+        --compile-bytecode \
+        --link-mode=copy \
+        --locked \
+        --no-default-groups \
+        --no-editable
 
 # Setup main entrypoint
 COPY scripts/entrypoint.sh scripts/entrypoint.sh
-ENTRYPOINT ["/service/scripts/entrypoint.sh", "poetry", "run", "--", "dotenv", "--file", ".env.python", "run", "--", "{{ servicename }}"]
+ENTRYPOINT ["/service/scripts/entrypoint.sh", "uv", "run", "--no-sync", "--", "{{ servicename }}"]
 CMD []
 
 # Setup ownership

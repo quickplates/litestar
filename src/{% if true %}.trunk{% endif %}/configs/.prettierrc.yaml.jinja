@@ -1,0 +1,10 @@
+plugins:
+  # Enable JSON sorting plugin
+  - prettier-plugin-sort-json
+  {%- if docs %}
+  # Enable package.json sorting plugin
+  - prettier-plugin-packagejson
+  {%- endif %}
+
+# Sort JSON recursively
+jsonRecursiveSort: true

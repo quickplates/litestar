@@ -3,11 +3,10 @@ from contextlib import AbstractAsyncContextManager
 from importlib import metadata
 
 from litestar import Litestar, Router
-{%- if events %}
 from litestar.channels import ChannelsPlugin
 from litestar.channels.backends.memory import MemoryChannelsBackend
-{%- endif %}
 from litestar.openapi import OpenAPIConfig
+from litestar.openapi.plugins import ScalarRenderPlugin
 from litestar.plugins import PluginProtocol
 from litestar.plugins.pydantic import PydanticPlugin
 
@@ -21,6 +20,7 @@ class AppBuilder:
 
     Args:
         config: Config object.
+
     """
 
     def __init__(self, config: Config) -> None:
@@ -39,18 +39,20 @@ class AppBuilder:
 
     def _build_openapi_config(self) -> OpenAPIConfig:
         return OpenAPIConfig(
-            # Title of the service
             title="{{ servicename }}",
-            # Version of the service
             version=metadata.version("{{ importname }}"),
-            # Description of the service
-            summary="{{ description }}",
-            # Use handler docstrings as operation descriptions
+            description="{{ description }}",
             use_handler_docstrings=True,
-            # Endpoint to serve the OpenAPI docs from
-            path="/schema",
+            path="/openapi",
+            render_plugins=[
+                ScalarRenderPlugin(
+                    path="/openapi",
+                    options={
+                        "hideClientButton": True,
+                    },
+                ),
+            ],
         )
-    {%- if events %}
 
     def _build_channels_plugin(self) -> ChannelsPlugin:
         return ChannelsPlugin(
@@ -61,7 +63,6 @@ class AppBuilder:
             # Don't allow channels outside of the list above
             arbitrary_channels_allowed=False,
         )
-    {%- endif %}
 
     def _build_pydantic_plugin(self) -> PydanticPlugin:
         return PydanticPlugin(
@@ -73,9 +74,7 @@ class AppBuilder:
 
     def _build_plugins(self) -> list[PluginProtocol]:
         return [
-            {%- if events %}
             self._build_channels_plugin(),
-            {%- endif %}
             self._build_pydantic_plugin(),
         ]
 
@@ -89,6 +88,7 @@ class AppBuilder:
         )
 
     def build(self) -> Litestar:
+        """Build the app."""
         return Litestar(
             route_handlers=self._get_route_handlers(),
             debug=self._get_debug(),

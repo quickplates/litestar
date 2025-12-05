@@ -10,6 +10,7 @@ class Server:
     Args:
         app: The application.
         config: The configuration for the server.
+
     """
 
     def __init__(self, app: Litestar, config: ServerConfig) -> None:
@@ -18,7 +19,6 @@ class Server:
 
     def run(self) -> None:
         """Run the server."""
-
         uvicorn.run(
             self._app,
             host=self._config.host,

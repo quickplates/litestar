@@ -1,6 +1,7 @@
 import asyncio
 import time
 from abc import ABC, abstractmethod
+from typing import override
 
 from tests.utils.waiting.conditions import WaitCondition
 from tests.utils.waiting.errors import GivenUpError
@@ -13,8 +14,6 @@ class WaitStrategy(ABC):
     async def wait(self, condition: WaitCondition) -> None:
         """Wait for condition to be met."""
 
-        pass
-
 
 class MaxRetriesStrategy(WaitStrategy):
     """Wait strategy that retries a given number of times."""
@@ -23,6 +22,7 @@ class MaxRetriesStrategy(WaitStrategy):
         self._retries = retries
         self._interval = interval
 
+    @override
     async def wait(self, condition: WaitCondition) -> None:
         exceptions = []
 
@@ -54,6 +54,7 @@ class TimeoutStrategy(WaitStrategy):
     def _get_current_time(self) -> float:
         return time.monotonic()
 
+    @override
     async def wait(self, condition: WaitCondition) -> None:
         exceptions = []
         start = self._get_current_time()

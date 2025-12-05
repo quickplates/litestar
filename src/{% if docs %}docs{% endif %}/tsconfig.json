@@ -1,7 +1,9 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "baseUrl": "./",
-    "strict": true
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true
   },
-  "extends": "@docusaurus/tsconfig"
+  "extends": ["@tsconfig/bases/recommended", "@tsconfig/bases/docusaurus"]
 }

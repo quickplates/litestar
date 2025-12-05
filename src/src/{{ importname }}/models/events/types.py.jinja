@@ -1,0 +1,21 @@
+from datetime import datetime
+from typing import Annotated
+
+from pydantic import Field
+
+from {{ importname }}.models.base import SerializableModel
+
+type TypeField[T] = Annotated[
+    T,
+    Field(description="Type of the event."),
+]
+
+type CreatedAtField = Annotated[
+    datetime,
+    Field(description="Time at which the event was created."),
+]
+
+type DataField[T: SerializableModel] = Annotated[
+    T,
+    Field(description="Data of the event."),
+]

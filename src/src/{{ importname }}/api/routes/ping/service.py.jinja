@@ -23,7 +23,6 @@ class Service:
 
     async def ping(self, request: m.PingRequest) -> m.PingResponse:
         """Ping."""
-
         req = pm.PingRequest()
 
         with self._handle_errors():
@@ -33,5 +32,4 @@ class Service:
 
     async def headping(self, request: m.HeadPingRequest) -> m.HeadPingResponse:
         """Ping headers."""
-
         return m.HeadPingResponse()

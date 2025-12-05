@@ -1,3 +1,4 @@
+from collections.abc import Generator
 from pathlib import Path
 
 import copier
@@ -10,10 +11,8 @@ from tests.utils import CWD, SandboxedGitRepo
 @pytest.fixture
 def data() -> dict[str, str]:
     """Return a dictionary with the data to be used in the template."""
-
     return {
         "accountname": "foo",
-        "email": "test@example.org",
         "servicename": "foo",
         "importname": "foo",
         "description": "Example service",
@@ -26,8 +25,6 @@ def data() -> dict[str, str]:
         "releases": "true",
         "registry": "true",
         "imagename": "services/foo",
-        "events": "true",
-        "sse": "true",
     }
 
 
@@ -36,9 +33,8 @@ def copied_template_directory(
     tmp_path_factory: pytest.TempPathFactory,
     cloned_template_directory: Path,
     data: dict[str, str],
-) -> Path:
+) -> Generator[Path]:
     """Return a temporary directory with a copied template."""
-
     tmp_path = tmp_path_factory.mktemp("copied-template-")
 
     copier.run_copy(
@@ -57,7 +53,6 @@ def copied_template_directory(
 
 def test_lint(copied_template_directory: Path) -> None:
     """Test that the project can be linted without errors."""
-
     with CWD(copied_template_directory):
         local.cmd.nix(
             "develop",

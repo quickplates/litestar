@@ -1,7 +1,10 @@
 from typing import Literal
 
+from pydantic import Field
+
 from {{ importname }}.models.base import SerializableModel
 from {{ importname }}.models.events import types as t
+from {{ importname }}.utils.time import naiveutcnow
 
 
 class BarEventData(SerializableModel):
@@ -14,6 +17,6 @@ class BarEventData(SerializableModel):
 class BarEvent(SerializableModel):
     """Bar event."""
 
-    type: t.TypeFieldType[Literal["bar"]] = "bar"
-    created_at: t.CreatedAtFieldType
-    data: t.DataFieldType[BarEventData]
+    type: t.TypeField[Literal["bar"]] = "bar"
+    created_at: t.CreatedAtField = Field(default_factory=naiveutcnow)
+    data: t.DataField[BarEventData]

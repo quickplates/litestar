@@ -14,13 +14,11 @@ name: Image
       - scripts/**
       - src/**
       - .dockerignore
-      - .env.python
       - Dockerfile
       - flake.lock
       - "*.nix"
-      - poetry.lock
-      - poetry.toml
       - pyproject.toml
+      - uv.lock
   # Run also on pull requests to main branch
   pull_request:
     branches:
@@ -31,13 +29,11 @@ name: Image
       - scripts/**
       - src/**
       - .dockerignore
-      - .env.python
       - Dockerfile
       - flake.lock
       - "*.nix"
-      - poetry.lock
-      - poetry.toml
       - pyproject.toml
+      - uv.lock
 
 jobs:
   image:
@@ -51,11 +47,11 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.9.0
+        uses: docker/setup-buildx-action@v3.11.1
       - name: Build Docker image
-        uses: docker/build-push-action@v6.14.0
+        uses: docker/build-push-action@v6.18.0
         with:
           context: ./
           # Don't save image

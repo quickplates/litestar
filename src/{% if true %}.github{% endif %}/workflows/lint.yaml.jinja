@@ -28,42 +28,42 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
       # We need to fetch upstream so Trunk can compare against it
       - name: Fetch upstream
         if: github.event_name == 'pull_request'
-        run: >
+        run: >-
           git
           fetch
           origin
           {{ '${{ github.event.pull_request.base.ref }}' }}
       - name: Setup Nix cache
-        uses: actions/cache@v4.2.1
+        uses: actions/cache@v4.3.0
         id: cache-nix
         with:
           path: {{ '${{ env.NIX_CACHE_DIR }}' }}
           key: lint-nix
       - name: Setup Trunk cache
-        uses: actions/cache@v4.2.1
+        uses: actions/cache@v4.3.0
         with:
           path: {{ '${{ env.TRUNK_CACHE_DIR }}' }}
           key: lint-trunk
       {%- if docs %}
       - name: Setup docs modules cache
-        uses: actions/cache@v4.2.1
+        uses: actions/cache@v4.3.0
         with:
           path: docs/node_modules/
           key: lint-docs-modules
       {%- endif %}
       - name: Install Nix
-        uses: cachix/install-nix-action@v30
+        uses: cachix/install-nix-action@v31.8.4
         with:
           github_access_token: {{ '${{ github.token }}' }}
-          install_url: https://releases.nixos.org/nix/nix-2.26.2/install
+          install_url: https://releases.nixos.org/nix/nix-2.28.5/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
-        run: >
+        run: >-
           nix-store
           --import
           < {{ '${{ env.NIX_CACHE_DIR }}/archive.nar' }}
@@ -72,7 +72,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           TRUNK_CACHE: {{ '${{ env.TRUNK_CACHE_DIR }}' }}
-        run: >
+        run: >-
           nix
           develop
           ./#lint
@@ -89,7 +89,7 @@ jobs:
         if: github.event_name != 'pull_request'
         env:
           TRUNK_CACHE: {{ '${{ env.TRUNK_CACHE_DIR }}' }}
-        run: >
+        run: >-
           nix
           develop
           ./#lint
@@ -102,7 +102,7 @@ jobs:
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Export Nix store cache
         if: "!cancelled()"
-        run: >
+        run: >-
           mkdir
           --parents
           {{ '${{ env.NIX_CACHE_DIR }}' }}

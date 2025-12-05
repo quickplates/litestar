@@ -6,5 +6,4 @@ class FallbackConsoleBuilder:
 
     def build(self) -> Console:
         """Build the console."""
-
         return Console()

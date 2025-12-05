@@ -6,5 +6,4 @@ class PingService:
 
     async def ping(self, request: m.PingRequest) -> m.PingResponse:
         """Ping."""
-
         return m.PingResponse()

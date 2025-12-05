@@ -5,5 +5,5 @@ from pydantic import Field, RootModel
 from {{ importname }}.models.events import bar as be
 from {{ importname }}.models.events import foo as fe
 
-Event = Annotated[be.BarEvent | fe.FooEvent, Field(..., discriminator="type")]
+type Event = Annotated[be.BarEvent | fe.FooEvent, Field(discriminator="type")]
 ParsableEvent = RootModel[Event]

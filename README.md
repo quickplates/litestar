@@ -42,14 +42,15 @@ copier copy gh:quickplates/litestar .
   with [`Docusaurus`](https://docusaurus.io)
 - optimized custom [`Docker`](https://www.docker.com) images
 - automatic releases on [`GitHub Container Registry`](https://ghcr.io)
-- dependency management with [`Poetry`](https://python-poetry.org)
+- dependency management with [`uv`](https://docs.astral.sh/uv)
 - testing with [`pytest`](https://pytest.org)
 - versatile configuration with
   [`Pydantic Settings`](https://docs.pydantic.dev/latest/concepts/pydantic_settings)
 - pleasant command line interfaces with [`Typer`](https://typer.tiangolo.com)
   and [`Rich`](https://rich.readthedocs.io)
-- support for [`Server-Sent Events`](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
-- live api documentation with [`Redoc`](https://redocly.com)
+- support for [`Server-Sent Events`](https://developer.mozilla.org/docs/Web/API/Server-sent_events)
+- live [`OpenAPI`](https://www.openapis.org) documentation
+  with [`Scalar`](https://scalar.com)
 
 ## 💻 Development
 

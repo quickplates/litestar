@@ -1,55 +1,91 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import eslint from "@eslint/js";
+import docusauruseslint from "@docusaurus/eslint-plugin";
+import { defineConfig, globalIgnores } from "@eslint/config-helpers";
+import jseslint from "@eslint/js";
 import perfectionisteslint from "eslint-plugin-perfectionist";
+import reacteslint from "eslint-plugin-react";
+import reacthookseslint from "eslint-plugin-react-hooks";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-});
+const files = {
+  ignored: ["build/", "node_modules/"],
+  js: ["**/*.js", "**/*.cjs", "**/*.mjs", "**/*.jsx"],
+  ts: ["**/*.ts", "**/*.cts", "**/*.mts", "**/*.tsx"],
+};
 
-export default tseslint.config(
-  // Use recommended eslint rules
-  eslint.configs.recommended,
+export default defineConfig(
+  // Global ignores
+  globalIgnores(files.ignored),
 
-  // Use recommended type-checked typescript-eslint rules
-  tseslint.configs.recommendedTypeChecked,
-
-  // Use stylistic type-checked typescript-eslint rules
-  tseslint.configs.stylisticTypeChecked,
-
-  // Use recommended Docusaurus rules
-  ...compat.extends("plugin:@docusaurus/recommended"),
-
-  // Use recommended perfectionist rules
-  perfectionisteslint.configs["recommended-alphabetical"],
-
-  // Custom configuration
+  // JavaScript support
   {
+    files: files.js,
+
     languageOptions: {
       globals: {
         // Support browser globals
         ...globals.browser,
-
-        // Support ES2023 globals
-        ...globals.es2023,
-
-        // Support node globals
-        ...globals.node,
       },
 
       parserOptions: {
-        // Use project service to build type information
-        // Needed for type-aware linting
-        projectService: true,
+        ecmaFeatures: {
+          // Support JSX syntax
+          jsx: true,
+        },
 
-        // Allow ES2022 syntax
+        // Allow ESM syntax
         sourceType: "module",
-
-        // Set the root directory of the project
-        // Needed for type-aware linting
-        tsconfigRootDir: import.meta.dirname,
       },
+    },
+  },
+
+  // TypeScript support
+  {
+    files: files.ts,
+
+    languageOptions: {
+      globals: {
+        // Support browser globals
+        ...globals.browser,
+      },
+
+      parser: tseslint.parser,
+
+      parserOptions: {
+        ecmaFeatures: {
+          // Support JSX syntax
+          jsx: true,
+        },
+
+        // Allow ESM syntax
+        sourceType: "module",
+      },
+    },
+  },
+
+  // JavaScript rules
+  {
+    extends: [jseslint.configs.recommended],
+
+    files: files.js,
+
+    rules: {
+      // Allow empty block statements
+      "no-empty": "off",
+
+      // Allow empty destructuring patterns
+      "no-empty-pattern": "off",
+    },
+  },
+
+  // TypeScript rules
+  {
+    extends: [tseslint.configs.recommended, tseslint.configs.stylistic],
+
+    files: files.ts,
+
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
     },
 
     rules: {
@@ -62,44 +98,85 @@ export default tseslint.config(
       // Use types instead of interfaces
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
 
-      // Allow promises in callbacks
-      "@typescript-eslint/no-misused-promises": [
+      // Use type imports
+      "@typescript-eslint/consistent-type-imports": [
         "error",
         {
-          checksVoidReturn: false,
+          disallowTypeAnnotations: false,
         },
       ],
 
-      // Allow nullish coalescing operator for primitive types
-      "@typescript-eslint/prefer-nullish-coalescing": [
+      // Allow namespaces
+      "@typescript-eslint/no-namespace": "off",
+
+      // Allow some unused variables
+      "@typescript-eslint/no-unused-vars": [
         "error",
         {
-          ignorePrimitives: true,
+          args: "none",
+          ignoreRestSiblings: true,
         },
       ],
+    },
+  },
 
-      // Allow async functions without await
-      "@typescript-eslint/require-await": "off",
+  // Perfectionist rules
+  {
+    extends: [
+      // This config already enables the plugin
+      perfectionisteslint.configs["recommended-natural"],
+    ],
 
-      // Skip checking whether static methods are bound
-      "@typescript-eslint/unbound-method": [
-        "error",
-        {
-          ignoreStatic: true,
-        },
-      ],
+    files: [...files.js, ...files.ts],
 
-      // Allow anonymous default exports
-      "import/no-anonymous-default-export": "off",
-
-      // Allow empty block statements
-      "no-empty": "off",
-
-      // Allow empty destructuring patterns
-      "no-empty-pattern": "off",
-
+    rules: {
       // Don't sort module members
       "perfectionist/sort-modules": "off",
+    },
+  },
+
+  // React rules
+  {
+    extends: [
+      reacteslint.configs.flat.recommended,
+      reacteslint.configs.flat["jsx-runtime"],
+      reacthookseslint.configs.flat.recommended,
+    ],
+
+    files: [...files.js, ...files.ts],
+
+    plugins: {
+      react: reacteslint,
+      "react-hooks": reacthookseslint,
+    },
+
+    rules: {
+      // Don't check hook dependencies
+      "react-hooks/exhaustive-deps": "off",
+
+      // Allow mutating values returned from hooks
+      "react-hooks/immutability": "off",
+
+      // Don't check manual memoization preservation by React Compiler
+      "react-hooks/preserve-manual-memoization": "off",
+    },
+
+    settings: {
+      react: {
+        // Automatically detect React version
+        version: "detect",
+      },
+    },
+  },
+
+  // Docusaurus rules
+  {
+    extends: [{ rules: docusauruseslint.configs.recommended.rules }],
+
+    files: [...files.js, ...files.ts],
+
+    plugins: {
+      "@docusaurus": docusauruseslint,
     },
   },
 );
