@@ -6,5 +6,4 @@ class CliBuilder:
 
     def build(self) -> Typer:
         """Build the app."""
-
         return Typer()

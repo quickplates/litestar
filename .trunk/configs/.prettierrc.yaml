@@ -1,0 +1,6 @@
+plugins:
+  # Enable JSON sorting plugin
+  - prettier-plugin-sort-json
+
+# Sort JSON recursively
+jsonRecursiveSort: true

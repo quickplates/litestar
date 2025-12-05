@@ -12,21 +12,18 @@ from {{ importname }}.config.models import Config
 
 @pytest.fixture(scope="session")
 def config() -> Config:
-    """Loaded configuration."""
-
+    """Build configuration."""
     return ConfigBuilder().build()
 
 
 @pytest.fixture(scope="session")
 def app(config: Config) -> Litestar:
-    """Reusable application."""
-
+    """Build application."""
     return AppBuilder(config).build()
 
 
 @pytest_asyncio.fixture(loop_scope="session", scope="session")
 async def client(app: Litestar) -> AsyncGenerator[AsyncTestClient]:
-    """Reusable test client."""
-
+    """Build test client."""
     async with AsyncTestClient(app=app) as client:
         yield client

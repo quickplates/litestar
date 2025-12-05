@@ -17,12 +17,11 @@ class EventsService:
 
         async with subscription as subscriber:
             async for event in subscriber.iter_events():
-                event = ParsableEvent.model_validate_json(event)
-                yield event.root
+                pe = ParsableEvent.model_validate_json(event)
+                yield pe.root
 
     async def subscribe(self, request: m.SubscribeRequest) -> m.SubscribeResponse:
         """Subscribe to app events."""
-
         events = self._subscribe()
 
         return m.SubscribeResponse(

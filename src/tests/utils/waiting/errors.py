@@ -1,8 +1,6 @@
 class WaitError(Exception):
     """Raised when a wait operation fails."""
 
-    pass
-
 
 class GivenUpError(WaitError):
     """Raised when a wait strategy gives up."""

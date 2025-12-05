@@ -9,7 +9,6 @@ class ConfigBuilder:
 
     def build(self) -> Config:
         """Build the config."""
-
         try:
             return Config()
         except ValidationError as ex:

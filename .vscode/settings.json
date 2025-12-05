@@ -1,4 +1,10 @@
 {
-  // Don't scan for git repositories other than the workspace root
-  "git.autoRepositoryDetection": false
+  "files.associations": {
+    "**/src/**": "plaintext"
+  },
+  "git.autoRepositoryDetection": false,
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.diagnosticsSource": "Pyright",
+  "python.analysis.pyrightVersion": "1.1.407",
+  "python.testing.pytestEnabled": true
 }

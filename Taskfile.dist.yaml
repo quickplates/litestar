@@ -1,4 +1,4 @@
-version: "3.39"
+version: "3.43"
 
 tasks:
   template:
@@ -8,7 +8,7 @@ tasks:
       GIT_CONFIG_GLOBAL: ""
       GIT_CONFIG_SYSTEM: ""
     cmds:
-      - >
+      - >-
         copier
         update
         --answers-file
@@ -17,7 +17,7 @@ tasks:
   flake:
     desc: Update flake.lock
     cmds:
-      - >
+      - >-
         nix
         --accept-flake-config
         --extra-experimental-features
@@ -29,28 +29,28 @@ tasks:
   fmt:
     desc: Format files
     cmds:
-      - >
+      - >-
         trunk
         fmt
         {{ .CLI_ARGS }}
   lint:
     desc: Lint files
     cmds:
-      - >
+      - >-
         trunk
         check
         {{ .CLI_ARGS }}
   clean:
-    desc: Clean build files
+    desc: Clean build outputs
     cmds:
-      - >
+      - >-
         rm
         --recursive
         --force
         {{ .CLI_ARGS }}
         build/
     status:
-      - >
+      - >-
         test
         '!'
         -d
@@ -78,7 +78,7 @@ tasks:
       - task: clean
         vars:
           CLI_ARGS: ""
-      - >
+      - >-
         copier
         copy
         --overwrite
@@ -100,13 +100,13 @@ tasks:
       GIT_COMMITTER_EMAIL: test@example.org
     dir: build/
     cmds:
-      - >
+      - >-
         git
         init
         --initial-branch
         main
         --quiet
-      - >
+      - >-
         git
         commit
         --allow-empty
@@ -114,7 +114,7 @@ tasks:
         'Initial commit'
         --quiet
     status:
-      - >
+      - >-
         test
         -d
         .git/
@@ -126,12 +126,13 @@ tasks:
       GIT_CONFIG_SYSTEM: ""
     dir: build/
     cmds:
-      - >
+      - >-
         git
         add
         --all
+        {{ .CLI_ARGS }}
     status:
-      - >
+      - >-
         test
         -z
         "$(git ls-files --others --exclude-standard)"
@@ -144,18 +145,20 @@ tasks:
             --data
             'accountname=foo'
             --data
-            'email=test@example.org'
-            --data
             'servicename=foo'
             --data
             'description=Example service'
             {{ .CLI_ARGS }}
       - task: init-build
+        vars:
+          CLI_ARGS: ""
       - task: add-build-changes
+        vars:
+          CLI_ARGS: ""
   test:
     desc: Test the project
     cmds:
-      - >
+      - >-
         pytest
         tests/
         {{ .CLI_ARGS }}

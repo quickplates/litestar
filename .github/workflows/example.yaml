@@ -37,27 +37,27 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
       - name: Setup Nix cache
-        uses: actions/cache@v4.2.1
+        uses: actions/cache@v4.3.0
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: example-nix
       - name: Install Nix
-        uses: cachix/install-nix-action@v30
+        uses: cachix/install-nix-action@v31.8.4
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.26.2/install
+          install_url: https://releases.nixos.org/nix/nix-2.28.5/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
-        run: >
+        run: >-
           nix-store
           --import
           < ${{ env.NIX_CACHE_DIR }}/archive.nar
       - name: Build template files
-        run: >
+        run: >-
           nix
           develop
           ./#template
@@ -69,8 +69,6 @@ jobs:
           --data
           'accountname=quickplates'
           --data
-          'email=quickplates@mail.spietras.dev'
-          --data
           'servicename=litestar-example'
           --data
           'reponame=litestar-example'
@@ -78,7 +76,7 @@ jobs:
           'description=Litestar service example 🌠'
       # Create archive to retain file permissions
       - name: Create archive
-        run: >
+        run: >-
           tar
           --directory
           build/
@@ -88,7 +86,7 @@ jobs:
           archive.tar
           ./
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.6.0
+        uses: actions/upload-artifact@v5.0.0
         with:
           include-hidden-files: true
           name: build
@@ -96,7 +94,7 @@ jobs:
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Export Nix store cache
         if: "!cancelled()"
-        run: >
+        run: >-
           mkdir
           --parents
           ${{ env.NIX_CACHE_DIR }}
@@ -114,11 +112,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v6.0.0
         with:
           name: build
       - name: Extract archive
-        run: >
+        run: >-
           mkdir
           --parents
           build/
@@ -131,7 +129,7 @@ jobs:
           --file
           archive.tar
       - name: Checkout example repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           repository: quickplates/litestar-example
           token: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
@@ -141,7 +139,7 @@ jobs:
       # Configure git to use GitHub Actions bot as committer
       - name: Configure git
         working-directory: example/
-        run: >
+        run: >-
           git
           config
           user.name
@@ -153,14 +151,14 @@ jobs:
           "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Reset example repository to first commit
         working-directory: example/
-        run: >
+        run: >-
           git
           reset
           --hard
           "$(git rev-list --max-parents=0 HEAD)"
       - name: Push changes
         working-directory: example/
-        run: >
+        run: >-
           git
           push
           --force
@@ -168,33 +166,33 @@ jobs:
           HEAD
       - name: Create new branch
         working-directory: example/
-        run: >
+        run: >-
           git
           checkout
           -b
           build
       - name: Copy build output
-        run: >
+        run: >-
           cp
           --recursive
           build/.
           example/
       - name: Add changes
         working-directory: example/
-        run: >
+        run: >-
           git
           add
           ./
       - name: Commit changes
         working-directory: example/
-        run: >
+        run: >-
           git
           commit
           --message
           'Added template files'
       - name: Push changes
         working-directory: example/
-        run: >
+        run: >-
           git
           push
           --force
@@ -204,7 +202,7 @@ jobs:
         working-directory: example/
         env:
           GITHUB_TOKEN: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
-        run: >
+        run: >-
           gh
           pr
           create
@@ -226,7 +224,7 @@ jobs:
         working-directory: example/
         env:
           GITHUB_TOKEN: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
-        run: >
+        run: >-
           gh
           release
           list
@@ -254,7 +252,7 @@ jobs:
         working-directory: example/
         env:
           GITHUB_TOKEN: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
-        run: >
+        run: >-
           gh
           pr
           merge
@@ -263,7 +261,7 @@ jobs:
           --squash
       - name: Fetch changes from origin
         working-directory: example/
-        run: >
+        run: >-
           git
           fetch
           --prune
@@ -273,7 +271,7 @@ jobs:
         working-directory: example/
         env:
           GITHUB_TOKEN: ${{ secrets.EXAMPLES_ACCESS_TOKEN }}
-        run: >
+        run: >-
           gh
           release
           create

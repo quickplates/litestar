@@ -1,6 +1,6 @@
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import Field, dataclass, field
-from typing import dataclass_transform
+from typing import dataclass_transform, overload
 
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
@@ -37,25 +37,36 @@ class SerializableModel(BaseModel):
     model_config = SerializableConfig
 
 
-def serializable[T](cls: type[T] | None = None, /) -> type[T]:
+@overload
+def serializable[T](cls: type[T], /) -> type[T]: ...
+@overload
+def serializable[T](cls: None = None, /) -> Callable[[type[T]], type[T]]: ...
+def serializable[T](
+    cls: type[T] | None = None, /
+) -> Callable[[type[T]], type[T]] | type[T]:
     """Transform a class into a serializable model."""
 
-    def update[T](cls: type[T], attribute: str) -> type[T]:
+    def update(cls: type[T], attribute: str) -> type[T]:
         old = getattr(cls, attribute, None)
         old = old if isinstance(old, Mapping) else {}
         new = {**old, **SerializableConfig}
         setattr(cls, attribute, new)
         return cls
 
-    def wrap[T](cls: type[T]) -> type[T]:
+    def wrap(cls: type[T]) -> type[T]:
         ismodel = issubclass(cls, BaseModel)
         attribute = "model_config" if ismodel else "__pydantic_config__"
-        cls = update(cls, attribute)
-        return cls
+        return update(cls, attribute)
 
     return wrap if cls is None else wrap(cls)
 
 
+@overload
+def datamodel[T](cls: type[T], /, *, order: bool = False) -> type[T]: ...
+@overload
+def datamodel[T](
+    cls: None = None, /, *, order: bool = False
+) -> Callable[[type[T]], type[T]]: ...
 @dataclass_transform(
     # Generate __eq__ method
     eq_default=True,
@@ -68,9 +79,10 @@ def serializable[T](cls: type[T] | None = None, /) -> type[T]:
     # Allow using dataclass field specifiers
     field_specifiers=(Field, field),
 )
-def datamodel[T](cls: type[T] | None = None, /, *, order: bool = False) -> type[T]:
+def datamodel[T](
+    cls: type[T] | None = None, /, *, order: bool = False
+) -> type[T] | Callable[[type[T]], type[T]]:
     """Transform a class into a data model."""
-
     return dataclass(
         cls,
         eq=True,

@@ -32,7 +32,6 @@ class Service:
 
     async def subscribe(self, request: m.SubscribeRequest) -> m.SubscribeResponse:
         """Subscribe to event messages."""
-
         messages = self._subscribe()
 
         return m.SubscribeResponse(

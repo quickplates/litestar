@@ -1,0 +1,10 @@
+[tool.pyright]
+# Analyze code only in these directories
+include = ["tests"]
+
+# Python version and platform to target
+pythonPlatform = "All"
+pythonVersion = "3.13"
+
+# Disable parsing dependencies for type information
+useLibraryCodeForTypes = false

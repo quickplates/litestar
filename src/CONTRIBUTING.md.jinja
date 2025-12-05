@@ -107,9 +107,9 @@ you will have the `Trunk` extension installed in `Visual Studio Code`.
 `Trunk` will be set as the default formatter for all files,
 so you can format with it by using any editor formatting features.
 
-## 🪶 Using `poetry`
+## ⚡ Using `uv`
 
-This project uses [`Poetry`](https://python-poetry.org) to manage dependencies.
+This project uses [`uv`](https://docs.astral.sh/uv) to manage dependencies.
 You can find the `pyproject.toml` file in the project root.
 This file contains all the dependencies and their versions.
 
@@ -129,11 +129,11 @@ you can run the following command:
 task update
 ```
 
-This will update the `poetry.lock` file with the latest versions of the dependencies.
+This will update the `uv.lock` file with the latest versions of the dependencies.
 
 ## ▶️ Running
 
-To run the service, you can use the following command:
+You can use the following command to run the service:
 
 ```sh
 task run

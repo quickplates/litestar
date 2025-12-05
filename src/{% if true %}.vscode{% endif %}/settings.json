@@ -1,8 +1,9 @@
 {
-  // Set default Python interpreter to the one in the virtual environment
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
-  // Don't activate the virtual environment by VS Code
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.diagnosticsSource": "Pyright",
+  "python.analysis.pyrightVersion": "1.1.407",
+  "python.analysis.showOnlyDirectDependenciesInAutoImport": true,
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "python.terminal.activateEnvironment": false,
-  // Enable pytest for testing
   "python.testing.pytestEnabled": true
 }

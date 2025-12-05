@@ -1,4 +1,5 @@
 from pathlib import Path
+from types import TracebackType
 
 from plumbum import local
 
@@ -15,10 +16,15 @@ class CWD:
         self._cwd.__enter__()
         return self._path
 
-    def __exit__(self, *args, **kwargs) -> bool:
+    def __exit__(
+        self,
+        exception_type: type[BaseException] | None,
+        exception: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool | None:
         if self._cwd is None:
             return False
-        return self._cwd.__exit__(*args, **kwargs)
+        return self._cwd.__exit__(exception_type, exception, traceback)
 
 
 class IgnoreGitConfig:
@@ -31,10 +37,15 @@ class IgnoreGitConfig:
         self._env = local.env(GIT_CONFIG_GLOBAL="", GIT_CONFIG_SYSTEM="")
         self._env.__enter__()
 
-    def __exit__(self, *args, **kwargs) -> bool:
+    def __exit__(
+        self,
+        exception_type: type[BaseException] | None,
+        exception: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool | None:
         if self._env is None:
             return False
-        return self._env.__exit__(*args, **kwargs)
+        return self._env.__exit__(exception_type, exception, traceback)
 
 
 class SandboxedGitRepo:
@@ -55,7 +66,14 @@ class SandboxedGitRepo:
         local.cmd.git("config", "--local", "user.name", self._username)
         local.cmd.git("config", "--local", "user.email", self._email)
 
-    def __exit__(self, *args, **kwargs) -> bool:
-        cwd_return = self._cwd.__exit__(*args, **kwargs)
-        ignore_git_config_return = self._ignore_git_config.__exit__(*args, **kwargs)
+    def __exit__(
+        self,
+        exception_type: type[BaseException] | None,
+        exception: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool | None:
+        cwd_return = self._cwd.__exit__(exception_type, exception, traceback)
+        ignore_git_config_return = self._ignore_git_config.__exit__(
+            exception_type, exception, traceback
+        )
         return cwd_return or ignore_git_config_return

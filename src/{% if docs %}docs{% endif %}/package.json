@@ -1,33 +1,52 @@
 {
   "name": "docs",
   "private": true,
-  "scripts": {
-    "docs": "docusaurus",
-    "update": "ncu --peer --doctor --upgrade && npm i --no-audit --no-fund",
-    "postupdate": "rm --recursive --force .tmp/",
-    "test": "docusaurus build --out-dir .tmp/",
-    "posttest": "rm --recursive --force .tmp/"
+  "browserslist": [
+    "defaults"
+  ],
+  "overrides": {
+    "@typescript-eslint/utils": "~8.46"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.7.0",
-    "@docusaurus/preset-classic": "^3.7.0",
-    "@mdx-js/react": "^3.1.0",
-    "prism-react-renderer": "^2.4.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@docusaurus/core": "~3.9",
+    "@docusaurus/preset-classic": "~3.9",
+    "@mdx-js/react": "~3.1",
+    "es-toolkit": "~1.41",
+    "prism-react-renderer": "~2.4",
+    "react": "~19.2",
+    "react-dom": "~19.2"
   },
   "devDependencies": {
-    "@docusaurus/eslint-plugin": "^3.7.0",
-    "@docusaurus/module-type-aliases": "^3.7.0",
-    "@docusaurus/tsconfig": "^3.7.0",
-    "@docusaurus/types": "^3.7.0",
-    "@eslint/eslintrc": "^3.3.0",
-    "@eslint/js": "^9.21.0",
-    "@types/react": "^18.3.18",
-    "eslint-plugin-perfectionist": "^4.9.0",
-    "globals": "^16.0.0",
-    "npm-check-updates": "^17.1.14",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.24.1"
+    "@docusaurus/eslint-plugin": "~3.9",
+    "@docusaurus/module-type-aliases": "~3.9",
+    "@docusaurus/tsconfig": "~3.9",
+    "@docusaurus/types": "~3.9",
+    "@eslint/config-helpers": "~0.4",
+    "@eslint/js": "~9.39",
+    "@tsconfig/bases": "~1.0",
+    "@types/react": "~19.2",
+    "@types/react-dom": "~19.2",
+    "eslint": "~9.39",
+    "eslint-plugin-perfectionist": "~4.15",
+    "eslint-plugin-react": "~7.37",
+    "eslint-plugin-react-hooks": "~7.0",
+    "globals": "~16.5",
+    "stylelint": "~16.25",
+    "stylelint-config-alphabetical-order": "~1.0",
+    "stylelint-config-css-modules": "~4.5",
+    "stylelint-config-standard": "~39.0",
+    "type-fest": "~5.2",
+    "typescript": "~5.9",
+    "typescript-eslint": "~8.46"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "npm",
+      "version": "~10.9"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "~22.20"
+    }
   }
 }

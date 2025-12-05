@@ -1,31 +1,27 @@
 version: 0.1
 cli:
-  version: 1.22.8
+  version: 1.25.0
 plugins:
   sources:
     - id: trunk
-      ref: v1.6.7
+      ref: v1.7.4
       uri: https://github.com/trunk-io/plugins
 runtimes:
   enabled:
     # Needed for gitleaks, shfmt
-    - go@1.23.6
-    # Needed for markdownlint, prettier, svgo
-    - node@22.14.0
-    # Needed for black, ruff, yamllint
-    - python@3.12.2
+    - go@1.25.0
+    # Needed for markdownlint, prettier, pyright
+    - node@22.20.0
+    # Needed for ruff, yamllint
+    - python@3.13.3
 lint:
   ignore:
     - linters: [ALL]
       paths:
-        # Ignore jinja files
-        - "**/*.jinja*"
+        # Ignore src directory
+        - "src/**"
         # Ignore copier answers file
         - "**/.copier-answers.yaml"
-    - linters: [ruff]
-      paths:
-        # Ignore source files
-        - src/**
   definitions:
     # Nix formatting check (local)
     - name: nix-fmt-check
@@ -61,43 +57,43 @@ lint:
             check
             path:${target}
           success_codes: [0, 1]
-    # Override default Prettier definition
-    - name: prettier
-      commands:
-        - name: format
-          run: >-
-            prettier
-            --no-error-on-unmatched-pattern
-            --write
-            ${target}
+    # Modify existing pyright definition
+    - name: pyright
+      environment:
+        - name: PATH
+          list:
+            # Inherit PATH to access Python
+            - ${env.PATH}
   enabled:
     # GitHub Actions linting
-    - actionlint@1.7.7
-    # Python formatting
-    - black@25.1.0
+    - actionlint@1.7.8
     # Check for whitespace errors
     - git-diff-check
     # Check for secrets in the code
-    - gitleaks@8.23.3
-    # Dockerfile linting
-    - hadolint@2.12.0
+    - gitleaks@8.29.0
     # Markdown linting
-    - markdownlint@0.44.0
+    - markdownlint@0.45.0
     # Nix formatting check
     - nix-fmt-check@SYSTEM
     # Nix flake check
     - nix-flake-check@SYSTEM
-    # JS, JSON, YAML, Markdown formatting
-    - prettier@3.5.1
-    # Python linting
-    - ruff@0.9.6
+    # JSON, YAML, Markdown formatting
+    - prettier@3.6.2:
+        packages:
+          # JSON sorting
+          - prettier-plugin-sort-json@4.1.1
+    # Python type checking
+    - pyright@1.1.407
+    # Python formatting and linting
+    - ruff@0.14.5:
+        commands:
+          - lint
+          - format
     # Shell linting
-    - shellcheck@0.10.0
+    - shellcheck@0.11.0
     # Shell formatting
-    - shfmt@3.10.0
-    # SVG formatting
-    - svgo@3.3.2
+    - shfmt@3.12.0
     # TOML formatting
-    - taplo@0.9.3
+    - taplo@0.10.0
     # YAML linting
-    - yamllint@1.35.1
+    - yamllint@1.37.1

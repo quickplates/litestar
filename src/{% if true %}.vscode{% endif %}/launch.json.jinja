@@ -1,17 +1,12 @@
 {
-  "version": "0.2.0",
   "configurations": [
     {
-      "name": "{{ servicename }}",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "{{ importname }}",
       "justMyCode": false,
-      "env": {
-        "PATH": "${workspaceFolder}/.venv/bin:${env:PATH}",
-        "PYTHONPATH": "${workspaceFolder}/.venv/lib/python3.12/site-packages:${env:EXTRAPYTHONPATH}",
-        "{{ envprefix }}__DEBUG": "true"
-      }
+      "module": "{{ importname }}",
+      "name": "{{ servicename }}",
+      "request": "launch",
+      "type": "debugpy"
     }
-  ]
+  ],
+  "version": "0.2.0"
 }

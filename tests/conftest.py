@@ -1,3 +1,4 @@
+from collections.abc import Generator
 from pathlib import Path
 
 import pytest
@@ -9,22 +10,19 @@ from tests.utils import CWD, IgnoreGitConfig, SandboxedGitRepo
 @pytest.fixture
 def root_directory() -> Path:
     """Return the root directory of the project."""
-
     return Path(__file__).parent.parent.resolve()
 
 
 @pytest.fixture
 def tracked_files(root_directory: Path) -> list[Path]:
     """Return a list of all tracked files (including unstaged) in the project."""
+    with CWD(root_directory), IgnoreGitConfig():
+        common_options = ["--full-name", "--exclude-standard"]
+        cached = local.cmd.git("ls-files", "--cached", *common_options)
+        others = local.cmd.git("ls-files", "--others", *common_options)
 
-    with CWD(root_directory):
-        with IgnoreGitConfig():
-            common_options = ["--full-name", "--exclude-standard"]
-            cached = local.cmd.git("ls-files", "--cached", *common_options)
-            others = local.cmd.git("ls-files", "--others", *common_options)
-
-    all = sorted(set(cached.splitlines() + others.splitlines()))
-    return [Path(path) for path in all]
+    paths = sorted(set(cached.splitlines() + others.splitlines()))
+    return [Path(path) for path in paths]
 
 
 @pytest.fixture
@@ -32,9 +30,8 @@ def cloned_template_directory(
     tmp_path_factory: pytest.TempPathFactory,
     root_directory: Path,
     tracked_files: list[Path],
-) -> Path:
+) -> Generator[Path]:
     """Return a temporary directory with a cloned copy of the repository."""
-
     tmp_path = tmp_path_factory.mktemp("cloned-template-repo-")
 
     with CWD(root_directory):

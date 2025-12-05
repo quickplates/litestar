@@ -11,5 +11,4 @@ class Waiter:
 
     async def wait(self) -> None:
         """Wait for condition to be met."""
-
         await self._strategy.wait(self._condition)
