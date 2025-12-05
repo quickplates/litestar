@@ -19,8 +19,8 @@ class ServerConfig(BaseModel):
 class Config(BaseConfig):
     """Configuration for the service."""
 
-    server: ServerConfig = ServerConfig()
-    """Configuration for the server."""
-
     debug: bool = True
     """Enable debug mode."""
+
+    server: ServerConfig = ServerConfig()
+    """Configuration for the server."""
