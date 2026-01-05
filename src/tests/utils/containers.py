@@ -1,5 +1,4 @@
 import asyncio
-from collections.abc import Sequence
 from types import TracebackType
 from typing import Self
 
@@ -24,6 +23,6 @@ class AsyncDockerContainer(DockerContainer):
             self.__exit__, exception_type, exception, traceback
         )
 
-    async def aexec(self, command: str | Sequence[str]) -> tuple[int, bytes]:
+    async def aexec(self, command: str | list[str]) -> tuple[int, bytes]:
         """Execute."""
         return await asyncio.to_thread(self.exec, command)
