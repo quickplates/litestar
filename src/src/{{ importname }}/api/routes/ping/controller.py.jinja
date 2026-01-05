@@ -1,3 +1,5 @@
+from collections.abc import Mapping
+
 from litestar import Controller as BaseController
 from litestar import handlers
 from litestar.datastructures import CacheControlHeader
@@ -19,7 +21,7 @@ class DependenciesBuilder:
             ping=PingService(),
         )
 
-    def build(self) -> dict[str, Provide]:
+    def build(self) -> Mapping[str, Provide]:
         """Build the dependencies."""
         return {
             "service": Provide(self._build_service),

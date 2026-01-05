@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from pydantic import BaseModel, Field
 
 from {{ importname }}.config.base import BaseConfig
@@ -12,7 +14,7 @@ class ServerConfig(BaseModel):
     port: int = Field(default={{ port }}, ge=0, le=65535)
     """Port to run the server on."""
 
-    trusted: str | list[str] | None = "*"
+    trusted: str | Sequence[str] | None = "*"
     """Trusted IP addresses."""
 
 

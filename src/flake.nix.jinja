@@ -86,6 +86,9 @@
               copier
             ];
 
+            # Remove in the future: https://github.com/testcontainers/testcontainers-python/issues/874
+            PYTHONWARNINGS = "ignore::DeprecationWarning:testcontainers";
+
             UV_PYTHON = python;
             UV_PYTHON_PREFERENCE = "only-system";
 
@@ -147,6 +150,9 @@
               uv
               cacert
             ];
+
+            # Remove in the future: https://github.com/testcontainers/testcontainers-python/issues/874
+            PYTHONWARNINGS = "ignore::DeprecationWarning:testcontainers";
 
             UV_PYTHON = python;
             UV_PYTHON_PREFERENCE = "only-system";
