@@ -1,4 +1,5 @@
 {
+  "python.analysis.autoImportCompletions": true,
   "python.analysis.diagnosticMode": "workspace",
   "python.analysis.diagnosticsSource": "Pyright",
   "python.analysis.pyrightVersion": "1.1.407",

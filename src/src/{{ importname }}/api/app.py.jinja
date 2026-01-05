@@ -1,4 +1,4 @@
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from contextlib import AbstractAsyncContextManager
 from importlib import metadata
 
@@ -26,7 +26,7 @@ class AppBuilder:
     def __init__(self, config: Config) -> None:
         self._config = config
 
-    def _get_route_handlers(self) -> list[Router]:
+    def _get_route_handlers(self) -> Sequence[Router]:
         return [router]
 
     def _get_debug(self) -> bool:
@@ -34,7 +34,7 @@ class AppBuilder:
 
     def _build_lifespan(
         self,
-    ) -> list[Callable[[Litestar], AbstractAsyncContextManager]]:
+    ) -> Sequence[Callable[[Litestar], AbstractAsyncContextManager]]:
         return []
 
     def _build_openapi_config(self) -> OpenAPIConfig:
@@ -72,7 +72,7 @@ class AppBuilder:
             validate_strict=False,
         )
 
-    def _build_plugins(self) -> list[PluginProtocol]:
+    def _build_plugins(self) -> Sequence[PluginProtocol]:
         return [
             self._build_channels_plugin(),
             self._build_pydantic_plugin(),

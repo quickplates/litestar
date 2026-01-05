@@ -1,31 +1,33 @@
-from collections.abc import Generator
-from contextlib import contextmanager
-from typing import Any
+from typing import Any, Self
 
-from pydantic import RootModel, ValidationError
+from pydantic import (
+    ModelWrapValidatorHandler,
+    RootModel,
+    ValidationError,
+    model_validator,
+)
 
 from {{ importname }}.api.exceptions import BadRequestException
 
 
-class Validator[T]:
+class Validator[T](RootModel[T]):
     """Validates input data."""
 
-    def __init__(self, t: type[T]) -> None:
-        self.Model = RootModel[t]
-
-    @contextmanager
-    def _handle_errors(self) -> Generator[None]:
+    @model_validator(mode="wrap")
+    @classmethod
+    def validator(cls, data: Any, handler: ModelWrapValidatorHandler[Self]) -> Self:
+        """Validate input data."""
         try:
-            yield
+            return handler(data)
         except ValidationError as ex:
             raise BadRequestException(extra=ex.errors(include_context=False)) from ex
 
-    def object(self, value: Any) -> T:
+    @classmethod
+    def validate_object(cls, data: Any) -> T:
         """Validate an object."""
-        with self._handle_errors():
-            return self.Model.model_validate(value).root
+        return cls.model_validate(data).root
 
-    def json(self, value: str) -> T:
+    @classmethod
+    def validate_json(cls, data: str) -> T:
         """Validate a JSON string."""
-        with self._handle_errors():
-            return self.Model.model_validate_json(value).root
+        return cls.model_validate_json(data).root

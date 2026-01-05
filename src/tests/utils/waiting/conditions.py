@@ -1,6 +1,6 @@
 import asyncio
 from abc import ABC, abstractmethod
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from typing import override
 
 
@@ -41,7 +41,9 @@ class CommandCondition(WaitCondition):
 
             super().__init__(message)
 
-    def __init__(self, command: list[str], env: dict[str, str] | None = None) -> None:
+    def __init__(
+        self, command: Sequence[str], env: Mapping[str, str] | None = None
+    ) -> None:
         self._command = command
         self._env = env
 
