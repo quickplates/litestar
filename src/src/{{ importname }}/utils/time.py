@@ -3,33 +3,22 @@ from email.utils import format_datetime, parsedate_to_datetime
 from typing import Annotated
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import AfterValidator, Field, TypeAdapter
-from pydantic import NaiveDatetime as PydanticNaiveDatetime
+from pydantic import AfterValidator, Field
+from pydantic import (
+    AwareDatetime as PydanticAwareDatetime,
+)
+from pydantic import (
+    NaiveDatetime as PydanticNaiveDatetime,
+)
+
+AwareDatetime = Annotated[
+    PydanticAwareDatetime, Field(examples=["2000-01-01T00:00:00Z"])
+]
 
 
-def awareutcnow() -> datetime:
-    """Return the current datetime in UTC with timezone information."""
-    return datetime.now(UTC)
-
-
-def naiveutcnow() -> datetime:
-    """Return the current datetime in UTC without timezone information."""
-    return awareutcnow().replace(tzinfo=None)
-
-
-def stringify(dt: datetime) -> str:
-    """Convert a datetime to a string in ISO 8601 format."""
-    return dt.isoformat().replace("+00:00", "Z")
-
-
-def httpparse(value: str) -> datetime:
-    """Parse an HTTP date string to a datetime."""
-    return parsedate_to_datetime(value)
-
-
-def httpstringify(dt: datetime) -> str:
-    """Convert a datetime to an HTTP date string."""
-    return format_datetime(dt, usegmt=True)
+NaiveDatetime = Annotated[
+    PydanticNaiveDatetime, Field(examples=["2000-01-01T00:00:00"])
+]
 
 
 class TimezoneValidationError(ValueError):
@@ -50,19 +39,35 @@ def validate_timezone(value: str) -> str:
 
 
 Timezone = Annotated[
-    str,
-    AfterValidator(validate_timezone),
-    Field(examples=["Europe/Warsaw"]),
+    str, AfterValidator(validate_timezone), Field(examples=["Europe/Warsaw"])
 ]
 
 
-def validate_naive_datetime(value: datetime) -> datetime:
-    """Validate a naive datetime."""
-    return TypeAdapter(PydanticNaiveDatetime).validate_python(value)
+def awareutcnow() -> AwareDatetime:
+    """Return the current datetime in UTC with timezone information."""
+    return datetime.now(UTC)
 
 
-NaiveDatetime = Annotated[
-    datetime,
-    AfterValidator(validate_naive_datetime),
-    Field(examples=["2025-01-01T00:00:00"]),
-]
+def naiveutcnow() -> NaiveDatetime:
+    """Return the current datetime in UTC without timezone information."""
+    return awareutcnow().replace(tzinfo=None)
+
+
+def isostringify(dt: datetime) -> str:
+    """Convert a datetime to a string in ISO 8601 format."""
+    return dt.isoformat().replace("+00:00", "Z")
+
+
+def isoparse(value: str) -> datetime:
+    """Parse a string in ISO 8601 format to a datetime."""
+    return datetime.fromisoformat(value)
+
+
+def httpparse(value: str) -> datetime:
+    """Parse an HTTP date string to a datetime."""
+    return parsedate_to_datetime(value)
+
+
+def httpstringify(dt: datetime) -> str:
+    """Convert a datetime to an HTTP date string."""
+    return format_datetime(dt, usegmt=True)
