@@ -63,11 +63,11 @@ def isoparse(value: str) -> datetime:
     return datetime.fromisoformat(value)
 
 
-def httpparse(value: str) -> datetime:
-    """Parse an HTTP date string to a datetime."""
-    return parsedate_to_datetime(value)
-
-
 def httpstringify(dt: datetime) -> str:
     """Convert a datetime to an HTTP date string."""
     return format_datetime(dt, usegmt=True)
+
+
+def httpparse(value: str) -> datetime:
+    """Parse an HTTP date string to a datetime."""
+    return parsedate_to_datetime(value)
