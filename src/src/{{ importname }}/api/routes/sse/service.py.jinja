@@ -19,21 +19,17 @@ class Service:
         try:
             yield
         except ee.ServiceError as ex:
-            raise e.ServiceError(str(ex)) from ex
+            raise e.ServiceError from ex
 
     async def _subscribe(self) -> AsyncGenerator[str]:
-        req = em.SubscribeRequest()
+        subscribe_request = em.SubscribeRequest()
 
         with self._handle_errors():
-            res = await self._events.subscribe(req)
+            subscribe_response = await self._events.subscribe(subscribe_request)
 
-            async for event in res.events:
-                yield event.model_dump_json(by_alias=True)
+            async for event in subscribe_response.events:
+                yield event.model_dump_json(round_trip=True)
 
     async def subscribe(self, request: m.SubscribeRequest) -> m.SubscribeResponse:
         """Subscribe to event messages."""
-        messages = self._subscribe()
-
-        return m.SubscribeResponse(
-            messages=messages,
-        )
+        return m.SubscribeResponse(messages=self._subscribe())

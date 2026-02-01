@@ -1,45 +1,39 @@
 from datetime import UTC, datetime
 from email.utils import format_datetime, parsedate_to_datetime
-from typing import Annotated
+from typing import Annotated, Any
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import AfterValidator, Field
-from pydantic import (
-    AwareDatetime as PydanticAwareDatetime,
-)
-from pydantic import (
-    NaiveDatetime as PydanticNaiveDatetime,
-)
+from pydantic import AwareDatetime as PydanticAwareDatetime
+from pydantic import BeforeValidator, Field
+from pydantic import NaiveDatetime as PydanticNaiveDatetime
 
-AwareDatetime = Annotated[
-    PydanticAwareDatetime, Field(examples=["2000-01-01T00:00:00Z"])
+type AwareDatetime = Annotated[
+    PydanticAwareDatetime,
+    Field(examples=["2000-01-01T00:00:00Z"]),
+]
+
+type NaiveDatetime = Annotated[
+    PydanticNaiveDatetime,
+    Field(examples=["2000-01-01T00:00:00"]),
 ]
 
 
-NaiveDatetime = Annotated[
-    PydanticNaiveDatetime, Field(examples=["2000-01-01T00:00:00"])
-]
+def validate_timezone(value: Any) -> ZoneInfo:
+    """Validate value as ZoneInfo."""
+    if isinstance(value, ZoneInfo):
+        return value
 
-
-class TimezoneValidationError(ValueError):
-    """Timezone validation error."""
-
-    def __init__(self, value: str) -> None:
-        super().__init__(f"Invalid time zone: {value}")
-
-
-def validate_timezone(value: str) -> str:
-    """Validate a time zone."""
     try:
-        ZoneInfo(value)
+        return ZoneInfo(value)
     except ZoneInfoNotFoundError as e:
-        raise TimezoneValidationError(value) from e
+        message = f"Invalid timezone: {value}"
+        raise ValueError(message) from e
 
-    return value
 
-
-Timezone = Annotated[
-    str, AfterValidator(validate_timezone), Field(examples=["Europe/Warsaw"])
+type Timezone = Annotated[
+    ZoneInfo,
+    BeforeValidator(validate_timezone, json_schema_input_type=str),
+    Field(examples=["Europe/Warsaw"]),
 ]
 
 

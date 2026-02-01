@@ -23,10 +23,10 @@ class Service:
 
     async def ping(self, request: m.PingRequest) -> m.PingResponse:
         """Ping."""
-        req = pm.PingRequest()
+        ping_request = pm.PingRequest()
 
         with self._handle_errors():
-            await self._ping.ping(req)
+            await self._ping.ping(ping_request)
 
         return m.PingResponse()
 

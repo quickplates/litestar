@@ -46,7 +46,6 @@
         trunk = pkgs.trunk-io;
         uv = pkgs.uv;
         cacert = pkgs.cacert;
-        copier = pkgs.python313.withPackages (ps: [ps.copier]);
         tini = pkgs.tini;
         su-exec = pkgs.su-exec;
       in {
@@ -83,7 +82,6 @@
               trunk
               uv
               cacert
-              copier
             ];
 
             # Remove in the future: https://github.com/testcontainers/testcontainers-python/issues/874

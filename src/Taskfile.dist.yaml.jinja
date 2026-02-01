@@ -8,7 +8,13 @@ tasks:
       GIT_CONFIG_GLOBAL: ""
       GIT_CONFIG_SYSTEM: ""
     cmds:
+      - task: install-internal
+        vars:
+          CLI_ARGS: ""
       - >-
+        uv
+        run
+        --
         copier
         update
         --answers-file
@@ -115,12 +121,6 @@ tasks:
         --recursive
         --force
         {{ '{{ .CLI_ARGS }}' }}
-        .venv/
-    status:
-      - >-
-        test
-        '!'
-        -d
         .venv/
   install:
     desc: Install dependencies

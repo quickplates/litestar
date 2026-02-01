@@ -1,0 +1,18 @@
+from {{ importname }}.services.test import errors as e
+from {{ importname }}.services.test import models as m
+
+
+class TestService:
+    """Service for tests."""
+
+    @property
+    def limit(self) -> int:
+        """Maximum length for the message."""
+        return 10
+
+    async def test(self, request: m.TestRequest) -> m.TestResponse:
+        """Test."""
+        if len(request.message) > self.limit:
+            raise e.MessageTooLongError(request.message, self.limit)
+
+        return m.TestResponse(message=request.message)
