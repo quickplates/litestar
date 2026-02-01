@@ -17,9 +17,7 @@ class DependenciesBuilder:
     """Builder for the dependencies of the controller."""
 
     async def _build_service(self) -> Service:
-        return Service(
-            ping=PingService(),
-        )
+        return Service(ping=PingService())
 
     def build(self) -> Mapping[str, Provide]:
         """Build the dependencies."""
@@ -43,9 +41,9 @@ class Controller(BaseController):
     )
     async def ping(self, service: Service) -> Response[None]:
         """Ping."""
-        req = m.PingRequest()
+        request = m.PingRequest()
 
-        await service.ping(req)
+        await service.ping(request)
 
         return Response(None)
 
@@ -59,8 +57,8 @@ class Controller(BaseController):
     )
     async def headping(self, service: Service) -> Response[None]:
         """Ping headers."""
-        req = m.HeadPingRequest()
+        request = m.HeadPingRequest()
 
-        await service.headping(req)
+        await service.headping(request)
 
         return Response(None)

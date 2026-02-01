@@ -1,0 +1,39 @@
+from {{ importname }}.models.base import SerializableModel, datamodel
+
+
+class Parameters(SerializableModel):
+    """Parameters for testing."""
+
+    message: str | None = None
+    """Optional message to include in the test."""
+
+
+class Result(SerializableModel):
+    """Result of the test."""
+
+    success: bool
+    """Indicates if the test was successful."""
+
+    message: str
+    """Message returned from the test."""
+
+
+type TestRequestParameters = Parameters | None
+
+type TestResponseResult = Result
+
+
+@datamodel
+class TestRequest:
+    """Request to test."""
+
+    parameters: TestRequestParameters
+    """Parameters for testing."""
+
+
+@datamodel
+class TestResponse:
+    """Response for test."""
+
+    result: TestResponseResult
+    """Result of the test."""

@@ -17,11 +17,7 @@ class DependenciesBuilder:
     """Builder for the dependencies of the controller."""
 
     async def _build_service(self, channels: ChannelsPlugin) -> Service:
-        return Service(
-            events=EventsService(
-                channels=channels,
-            ),
-        )
+        return Service(events=EventsService(channels=channels))
 
     def build(self) -> Mapping[str, Provide]:
         """Build the dependencies."""
@@ -49,8 +45,8 @@ class Controller(BaseController):
     )
     async def subscribe(self, service: Service) -> ServerSentEvent:
         """Get a stream of Server-Sent Events."""
-        req = m.SubscribeRequest()
+        request = m.SubscribeRequest()
 
-        res = await service.subscribe(req)
+        response = await service.subscribe(request)
 
-        return ServerSentEvent(res.messages)
+        return ServerSentEvent(response.messages)

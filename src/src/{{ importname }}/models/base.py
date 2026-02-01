@@ -1,64 +1,64 @@
-from collections.abc import Callable, Mapping
+from collections.abc import Callable
 from dataclasses import Field, dataclass, field
-from typing import dataclass_transform, overload
+from typing import dataclass_transform, get_args, overload, override
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Json, RootModel
 from pydantic.alias_generators import to_camel
 
-SerializableConfig = ConfigDict(
-    # Ignore extra fields
-    extra="ignore",
-    # Make the instance immutable
-    frozen=True,
-    # Allow populating aliased fields by their original name
-    populate_by_name=True,
-    # Disallow arbitrary types that Pydantic can't handle
-    arbitrary_types_allowed=False,
+CONFIG = ConfigDict(
     # Add camelCase aliases for all fields
     alias_generator=to_camel,
     # Disallow non-serializable float values
     allow_inf_nan=False,
-    # Allow type coercion
-    strict=False,
-    # Validate default values
-    validate_default=True,
-    # Make fields with default values required in serialization schemas
-    json_schema_serialization_defaults_required=True,
     # Allow coercion of numbers to strings
     coerce_numbers_to_str=True,
+    # Make the instance immutable
+    frozen=True,
+    # Make fields with default values required in serialization schemas
+    json_schema_serialization_defaults_required=True,
+    # Serialize aliased fields by their alias
+    serialize_by_alias=True,
+    # Preserve empty paths in URLs
+    url_preserve_empty_path=True,
     # Use field docstrings as descriptions
     use_attribute_docstrings=True,
+    # Allow populating aliased fields by their original name
+    validate_by_name=True,
+    # Validate default values
+    validate_default=True,
+    # Validate return values from callable validators
+    validate_return=True,
+    # Attach underlying exceptions as cause for validation errors
+    validation_error_cause=True,
 )
 
 
 class SerializableModel(BaseModel):
-    """Base class for models that can be serialized to JSON."""
+    """Base class for serializable models."""
 
-    model_config = SerializableConfig
+    model_config = CONFIG
 
 
-@overload
-def serializable[T](cls: type[T], /) -> type[T]: ...
-@overload
-def serializable[T](cls: None = None, /) -> Callable[[type[T]], type[T]]: ...
-def serializable[T](
-    cls: type[T] | None = None, /
-) -> Callable[[type[T]], type[T]] | type[T]:
-    """Transform a class into a serializable model."""
+class Serializable[T](RootModel[T]):
+    """Base class for serializable root models."""
 
-    def update(cls: type[T], attribute: str) -> type[T]:
-        old = getattr(cls, attribute, None)
-        old = old if isinstance(old, Mapping) else {}
-        new = {**old, **SerializableConfig}
-        setattr(cls, attribute, new)
-        return cls
+    model_config = CONFIG | ConfigDict(
+        model_title_generator=lambda cls: cls.__annotation__.__name__,
+    )
 
-    def wrap(cls: type[T]) -> type[T]:
-        ismodel = issubclass(cls, BaseModel)
-        attribute = "model_config" if ismodel else "__pydantic_config__"
-        return update(cls, attribute)
+    @override
+    @classmethod
+    def __pydantic_on_complete__(cls) -> None:
+        cls.__annotation__ = cls.model_fields["root"].annotation
 
-    return wrap if cls is None else wrap(cls)
+
+class Jsonable[T](Serializable[T | Json[T]]):
+    """Base class for JSON-serializable root models."""
+
+    @override
+    @classmethod
+    def __pydantic_on_complete__(cls) -> None:
+        cls.__annotation__ = get_args(cls.model_fields["root"].annotation)[0]
 
 
 @overload

@@ -1,0 +1,39 @@
+from collections.abc import Generator
+from contextlib import contextmanager
+
+from {{ importname }}.api.routes.test import errors as e
+from {{ importname }}.api.routes.test import models as m
+from {{ importname }}.services.test import errors as te
+from {{ importname }}.services.test import models as tm
+from {{ importname }}.services.test.service import TestService
+
+
+class Service:
+    """Service for the test endpoint."""
+
+    def __init__(self, test: TestService) -> None:
+        self._test = test
+
+    @contextmanager
+    def _handle_errors(self) -> Generator[None]:
+        try:
+            yield
+        except te.ValidationError as ex:
+            raise e.ValidationError(str(ex)) from ex
+        except te.ServiceError as ex:
+            raise e.ServiceError from ex
+
+    async def test(self, request: m.TestRequest) -> m.TestResponse:
+        """Test."""
+        test_request = tm.TestRequest(
+            message=request.parameters.message
+            if request.parameters and request.parameters.message
+            else "Success"
+        )
+
+        with self._handle_errors():
+            test_response = await self._test.test(test_request)
+
+        return m.TestResponse(
+            result=m.Result(success=True, message=test_response.message)
+        )
