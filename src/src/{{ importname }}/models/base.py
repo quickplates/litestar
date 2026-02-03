@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from dataclasses import Field, dataclass, field
-from typing import dataclass_transform, get_args, overload, override
+from typing import Any, dataclass_transform, get_args, overload, override
 
 from pydantic import BaseModel, ConfigDict, Json, RootModel
 from pydantic.alias_generators import to_camel
@@ -42,14 +42,21 @@ class SerializableModel(BaseModel):
 class Serializable[T](RootModel[T]):
     """Base class for serializable root models."""
 
-    model_config = CONFIG | ConfigDict(
-        model_title_generator=lambda cls: cls.__annotation__.__name__,
-    )
+    model_config = CONFIG
+
+    @classmethod
+    def __get_annotation__(cls) -> Any:
+        return cls.model_fields["root"].annotation
+
+    @classmethod
+    def __get_title__(cls) -> str:
+        return getattr(cls.__get_annotation__(), "__name__", cls.__name__)
 
     @override
     @classmethod
     def __pydantic_on_complete__(cls) -> None:
-        cls.__annotation__ = cls.model_fields["root"].annotation
+        cls.__annotation__ = cls.__get_annotation__()
+        cls.model_config["model_title_generator"] = lambda cls: cls.__get_title__()
 
 
 class Jsonable[T](Serializable[T | Json[T]]):
@@ -57,8 +64,8 @@ class Jsonable[T](Serializable[T | Json[T]]):
 
     @override
     @classmethod
-    def __pydantic_on_complete__(cls) -> None:
-        cls.__annotation__ = get_args(cls.model_fields["root"].annotation)[0]
+    def __get_annotation__(cls) -> Any:
+        return get_args(cls.model_fields["root"].annotation)[0]
 
 
 @overload
