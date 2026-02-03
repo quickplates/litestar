@@ -19,7 +19,7 @@ class Service:
         try:
             yield
         except pe.ServiceError as ex:
-            raise e.ServiceError(str(ex)) from ex
+            raise e.ServiceError from ex
 
     async def ping(self, request: m.PingRequest) -> m.PingResponse:
         """Ping."""
