@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from email.utils import format_datetime, parsedate_to_datetime
 from typing import Annotated, Any
-from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from zoneinfo import ZoneInfo
 
 from pydantic import AwareDatetime as PydanticAwareDatetime
 from pydantic import BeforeValidator, Field
@@ -25,7 +25,7 @@ def validate_timezone(value: Any) -> ZoneInfo:
 
     try:
         return ZoneInfo(value)
-    except ZoneInfoNotFoundError as e:
+    except Exception as e:
         message = f"Invalid timezone: {value}"
         raise ValueError(message) from e
 

@@ -2,7 +2,7 @@ class ServiceError(Exception):
     """Base class for service errors."""
 
 
-class ValidationError(Exception):
+class ValidationError(ServiceError):
     """Raised when a validation error occurs."""
 
 
