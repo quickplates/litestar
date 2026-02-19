@@ -1,12 +1,17 @@
 from collections.abc import AsyncIterator
+from collections.abc import Set as AbstractSet
 
 from {{ importname }}.models.base import datamodel
-from {{ importname }}.models.events.event import Event
+from {{ importname }}.models.events.enums import EventType
+from {{ importname }}.models.events.types import Event
 
 
 @datamodel
 class SubscribeRequest:
     """Request to subscribe."""
+
+    types: AbstractSet[EventType] | None = None
+    """Types of events to subscribe to."""
 
 
 @datamodel

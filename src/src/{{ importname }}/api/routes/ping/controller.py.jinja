@@ -2,10 +2,8 @@ from collections.abc import Mapping
 
 from litestar import Controller as BaseController
 from litestar import handlers
-from litestar.datastructures import CacheControlHeader
+from litestar.datastructures import ResponseHeader
 from litestar.di import Provide
-from litestar.openapi import ResponseSpec
-from litestar.response import Response
 from litestar.status_codes import HTTP_204_NO_CONTENT
 
 from {{ importname }}.api.routes.ping import models as m
@@ -33,32 +31,34 @@ class Controller(BaseController):
 
     @handlers.get(
         summary="Ping",
-        cache_control=CacheControlHeader(no_store=True),
         status_code=HTTP_204_NO_CONTENT,
-        responses={
-            HTTP_204_NO_CONTENT: ResponseSpec(None, description="Successful ping.")
-        },
+        response_headers=[
+            ResponseHeader(
+                name="Cache-Control",
+                value="no-store",
+                required=True,
+            ),
+        ],
     )
-    async def ping(self, service: Service) -> Response[None]:
+    async def ping(self, service: Service) -> None:
         """Ping."""
         request = m.PingRequest()
 
         await service.ping(request)
 
-        return Response(None)
-
     @handlers.head(
         summary="Ping headers",
-        cache_control=CacheControlHeader(no_store=True),
         status_code=HTTP_204_NO_CONTENT,
-        responses={
-            HTTP_204_NO_CONTENT: ResponseSpec(None, description="Successful ping.")
-        },
+        response_headers=[
+            ResponseHeader(
+                name="Cache-Control",
+                value="no-store",
+                required=True,
+            ),
+        ],
     )
-    async def headping(self, service: Service) -> Response[None]:
+    async def headping(self, service: Service) -> None:
         """Ping headers."""
         request = m.HeadPingRequest()
 
         await service.headping(request)
-
-        return Response(None)

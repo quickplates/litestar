@@ -1,16 +1,39 @@
 from collections.abc import Mapping
+from dataclasses import dataclass
+from typing import Annotated
 
 from litestar import Controller as BaseController
 from litestar import handlers
 from litestar.channels import ChannelsPlugin
+from litestar.datastructures import ResponseHeader
 from litestar.di import Provide
-from litestar.openapi import ResponseSpec
-from litestar.response import ServerSentEvent
+from litestar.openapi.spec import OpenAPIResponse, OpenAPIType, Operation, Schema
+from litestar.params import Parameter
+from litestar.response import ServerSentEvent, ServerSentEventMessage
 from litestar.status_codes import HTTP_200_OK
 
 from {{ importname }}.api.routes.sse import models as m
 from {{ importname }}.api.routes.sse.service import Service
+from {{ importname }}.models.base import Jsonable
 from {{ importname }}.services.events.service import EventsService
+
+
+@dataclass
+class SubscribeOperation(Operation):
+    """OpenAPI Operation for getting a stream of Server-Sent Events."""
+
+    def __post_init__(self) -> None:
+        if (
+            self.responses
+            and str(HTTP_200_OK) in self.responses
+            and (response := self.responses[str(HTTP_200_OK)])
+            and isinstance(response, OpenAPIResponse)
+            and (content := response.content)
+            and "text/event-stream" in content
+            and (schema := content["text/event-stream"].schema)
+            and isinstance(schema, Schema)
+        ):
+            schema.type = OpenAPIType.STRING
 
 
 class DependenciesBuilder:
@@ -34,19 +57,38 @@ class Controller(BaseController):
     @handlers.get(
         summary="Get SSE stream",
         status_code=HTTP_200_OK,
-        responses={
-            HTTP_200_OK: ResponseSpec(
-                str,
-                description="Stream of Server-Sent Events.",
-                media_type="text/event-stream",
-                generate_examples=False,
-            )
-        },
+        response_description="Request fulfilled, stream of Server-Sent Events follows",
+        response_headers=[
+            ResponseHeader(
+                name="Cache-Control",
+                value="no-cache",
+                required=True,
+            ),
+            ResponseHeader(
+                name="Connection",
+                value="keep-alive",
+                required=True,
+            ),
+        ],
+        media_type="text/event-stream",
+        operation_class=SubscribeOperation,
     )
-    async def subscribe(self, service: Service) -> ServerSentEvent:
+    async def subscribe(
+        self,
+        service: Service,
+        types: Annotated[
+            Jsonable[m.SubscribeRequestTypes] | None,
+            Parameter(
+                description="Types of events to subscribe to.",
+            ),
+        ] = None,
+    ) -> ServerSentEvent:
         """Get a stream of Server-Sent Events."""
-        request = m.SubscribeRequest()
+        request = m.SubscribeRequest(types=types.root if types else None)
 
         response = await service.subscribe(request)
 
-        return ServerSentEvent(response.messages)
+        return ServerSentEvent(
+            ServerSentEventMessage(data=message.event.model_dump_json(round_trip=True))
+            async for message in response.messages
+        )
