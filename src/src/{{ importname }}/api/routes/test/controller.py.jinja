@@ -3,6 +3,7 @@ from typing import Annotated
 
 from litestar import Controller as BaseController
 from litestar import handlers
+from litestar.channels import ChannelsPlugin
 from litestar.di import Provide
 from litestar.params import Parameter
 from litestar.response import Response
@@ -18,8 +19,8 @@ from {{ importname }}.services.test.service import TestService
 class DependenciesBuilder:
     """Builder for the dependencies of the controller."""
 
-    async def _build_service(self) -> Service:
-        return Service(test=TestService())
+    async def _build_service(self, channels: ChannelsPlugin) -> Service:
+        return Service(test=TestService(channels=channels))
 
     def build(self) -> Mapping[str, Provide]:
         """Build the dependencies."""
@@ -35,6 +36,7 @@ class Controller(BaseController):
 
     @handlers.get(
         summary="Test",
+        raises=[BadRequestException],
     )
     async def test(
         self,

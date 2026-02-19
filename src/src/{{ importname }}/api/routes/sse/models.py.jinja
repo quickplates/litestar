@@ -1,16 +1,44 @@
 from collections.abc import AsyncIterator
+from collections.abc import Set as AbstractSet
+from typing import Annotated
+
+from pydantic import BeforeValidator
 
 from {{ importname }}.models.base import datamodel
+from {{ importname }}.models.events.enums import EventType
+from {{ importname }}.services.events import models as em
+
+
+@datamodel
+class EventMessage:
+    """Event message data."""
+
+    event: em.Event
+    """Event that occurred."""
+
+
+type SubscribeRequestTypes = Annotated[
+    AbstractSet[EventType] | None,
+    BeforeValidator(
+        lambda value: value.split(",") if isinstance(value, str) else value,
+        json_schema_input_type=str | AbstractSet[EventType] | None,
+    ),
+]
+
+type SubscribeResponseMessages = AsyncIterator[EventMessage]
 
 
 @datamodel
 class SubscribeRequest:
     """Request to subscribe."""
 
+    types: SubscribeRequestTypes
+    """Types of events to subscribe to."""
+
 
 @datamodel
 class SubscribeResponse:
     """Response for subscribe."""
 
-    messages: AsyncIterator[str]
-    """Stream of messages."""
+    messages: SubscribeResponseMessages
+    """Stream of event messages."""
