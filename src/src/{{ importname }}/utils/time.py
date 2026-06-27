@@ -1,9 +1,16 @@
 from datetime import UTC, datetime, timedelta
 from email.utils import format_datetime, parsedate_to_datetime
+from functools import partial
 from typing import Annotated
 from zoneinfo import ZoneInfo
 
-from pydantic import AfterValidator, Field
+from pydantic import (
+    AfterValidator,
+    BeforeValidator,
+    Field,
+    PlainSerializer,
+    TypeAdapter,
+)
 from pydantic import AwareDatetime as PydanticAwareDatetime
 from pydantic import NaiveDatetime as PydanticNaiveDatetime
 from pydantic.json_schema import Examples, WithJsonSchema
@@ -38,6 +45,15 @@ type UTCDatetime = Annotated[
 ]
 
 
+type HTTPDatetime = Annotated[
+    UTCDatetime,
+    BeforeValidator(parsedate_to_datetime, json_schema_input_type=str),
+    PlainSerializer(partial(format_datetime, usegmt=True), return_type=str),
+    WithJsonSchema({"type": "string", "description": "Datetime in HTTP format."}),
+    Examples(["Sat, 01 Jan 2000 00:00:00 GMT"]),
+]
+
+
 type Timezone = Annotated[
     ZoneInfo,
     WithJsonSchema({"type": "string", "description": "Timezone name."}),
@@ -52,31 +68,31 @@ type Timedelta = Annotated[
 ]
 
 
-def awareutcnow() -> UTCDatetime:
+def awareutcnow() -> datetime:
     """Return the current datetime in UTC with timezone information."""
     return datetime.now(UTC)
 
 
-def naiveutcnow() -> NaiveDatetime:
+def naiveutcnow() -> datetime:
     """Return the current datetime in UTC without timezone information."""
     return awareutcnow().replace(tzinfo=None)
 
 
 def isostringify(dt: datetime) -> str:
     """Convert a datetime to a string in ISO 8601 format."""
-    return dt.isoformat().replace("+00:00", "Z")
+    return TypeAdapter(datetime).dump_python(dt, mode="json")
 
 
 def isoparse(value: str) -> datetime:
     """Parse a string in ISO 8601 format to a datetime."""
-    return datetime.fromisoformat(value)
+    return TypeAdapter(datetime).validate_python(value)
 
 
 def httpstringify(dt: datetime) -> str:
     """Convert a datetime to an HTTP date string."""
-    return format_datetime(dt, usegmt=True)
+    return TypeAdapter(HTTPDatetime).dump_python(dt, mode="json")
 
 
 def httpparse(value: str) -> datetime:
     """Parse an HTTP date string to a datetime."""
-    return parsedate_to_datetime(value)
+    return TypeAdapter(HTTPDatetime).validate_python(value)
