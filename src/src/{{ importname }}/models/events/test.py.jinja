@@ -5,7 +5,7 @@ from pydantic import Field
 from {{ importname }}.models.base import SerializableModel
 from {{ importname }}.models.events.enums import EventType
 from {{ importname }}.models.events.fields import CreatedAtField, DataField, TypeField
-from {{ importname }}.utils.time import naiveutcnow
+from {{ importname }}.utils.time import awareutcnow
 
 
 class TestEventData(SerializableModel):
@@ -19,5 +19,5 @@ class TestEvent(SerializableModel):
     """Event that is emitted for testing purposes."""
 
     type: TypeField[Literal[EventType.TEST]] = EventType.TEST
-    created_at: CreatedAtField = Field(default_factory=naiveutcnow)
+    created_at: CreatedAtField = Field(default_factory=awareutcnow)
     data: DataField[TestEventData]
