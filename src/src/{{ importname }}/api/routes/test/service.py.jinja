@@ -19,7 +19,7 @@ class Service:
         try:
             yield
         except te.ValidationError as ex:
-            raise e.ValidationError(str(ex)) from ex
+            raise e.ValidationError from ex
         except te.ServiceError as ex:
             raise e.ServiceError from ex
 

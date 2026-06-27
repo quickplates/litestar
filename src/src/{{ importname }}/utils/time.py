@@ -1,43 +1,58 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from email.utils import format_datetime, parsedate_to_datetime
-from typing import Annotated, Any
+from typing import Annotated
 from zoneinfo import ZoneInfo
 
+from pydantic import AfterValidator, Field
 from pydantic import AwareDatetime as PydanticAwareDatetime
-from pydantic import BeforeValidator, Field
 from pydantic import NaiveDatetime as PydanticNaiveDatetime
+from pydantic.json_schema import Examples, WithJsonSchema
 
 type AwareDatetime = Annotated[
     PydanticAwareDatetime,
-    Field(examples=["2000-01-01T00:00:00Z"]),
+    Field(description="Datetime with timezone."),
+    Examples(["2000-01-01T00:00:00Z"]),
 ]
 
 type NaiveDatetime = Annotated[
     PydanticNaiveDatetime,
-    Field(examples=["2000-01-01T00:00:00"]),
+    Field(description="Datetime without timezone."),
+    Examples(["2000-01-01T00:00:00"]),
 ]
 
 
-def validate_timezone(value: Any) -> ZoneInfo:
-    """Validate value as ZoneInfo."""
-    if isinstance(value, ZoneInfo):
-        return value
+def validate_utc_datetime(value: AwareDatetime) -> AwareDatetime:
+    """Validate that the datetime is in UTC."""
+    if value.tzinfo != UTC:
+        msg = f"Datetime must be in UTC, got {value.tzinfo}"
+        raise ValueError(msg)
 
-    try:
-        return ZoneInfo(value)
-    except Exception as e:
-        message = f"Invalid timezone: {value}"
-        raise ValueError(message) from e
+    return value
+
+
+type UTCDatetime = Annotated[
+    PydanticAwareDatetime,
+    Field(description="Datetime in UTC."),
+    AfterValidator(validate_utc_datetime),
+    Examples(["2000-01-01T00:00:00Z"]),
+]
 
 
 type Timezone = Annotated[
     ZoneInfo,
-    BeforeValidator(validate_timezone, json_schema_input_type=str),
-    Field(examples=["Europe/Warsaw"]),
+    WithJsonSchema({"type": "string", "description": "Timezone name."}),
+    Examples(["Europe/Warsaw"]),
 ]
 
 
-def awareutcnow() -> AwareDatetime:
+type Timedelta = Annotated[
+    timedelta,
+    Field(description="Duration of time."),
+    Examples(["PT1H"]),
+]
+
+
+def awareutcnow() -> UTCDatetime:
     """Return the current datetime in UTC with timezone information."""
     return datetime.now(UTC)
 

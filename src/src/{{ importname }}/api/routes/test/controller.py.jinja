@@ -54,6 +54,6 @@ class Controller(BaseController):
         try:
             response = await service.test(request)
         except e.ValidationError as ex:
-            raise BadRequestException(extra=[str(ex)]) from ex
+            raise BadRequestException from ex
 
         return Response(Serializable(response.result))
