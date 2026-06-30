@@ -47,7 +47,10 @@ type UTCDatetime = Annotated[
 
 type HTTPDatetime = Annotated[
     UTCDatetime,
-    BeforeValidator(parsedate_to_datetime, json_schema_input_type=str),
+    BeforeValidator(
+        lambda value: parsedate_to_datetime(value) if isinstance(value, str) else value,
+        json_schema_input_type=str,
+    ),
     PlainSerializer(partial(format_datetime, usegmt=True), return_type=str),
     WithJsonSchema({"type": "string", "description": "Datetime in HTTP format."}),
     Examples(["Sat, 01 Jan 2000 00:00:00 GMT"]),
