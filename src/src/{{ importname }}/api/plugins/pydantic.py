@@ -23,6 +23,7 @@ from litestar.plugins.pydantic import (
 from litestar.typing import FieldDefinition
 from pydantic import TypeAdapter
 
+
 type Transform[I, O] = Callable[[I], O]
 
 
@@ -98,15 +99,17 @@ class SchemaConverter:
             "patternProperties": lambda value: {
                 key: self.convert(schema) for key, schema in value.items()
             },
-            "additionalProperties": lambda value: value
-            if isinstance(value, bool)
-            else self.convert(value),
+            "additionalProperties": lambda value: (
+                value if isinstance(value, bool) else self.convert(value)
+            ),
             "propertyNames": self.convert,
             "unevaluatedItems": self.convert,
             "unevaluatedProperties": self.convert,
-            "type": lambda value: [OpenAPIType(t) for t in value]
-            if isinstance(value, list)
-            else OpenAPIType(value),
+            "type": lambda value: (
+                [OpenAPIType(t) for t in value]
+                if isinstance(value, list)
+                else OpenAPIType(value)
+            ),
             "format": lambda value: OpenAPIFormat(value),
             "contentSchema": self.convert,
             "discriminator": lambda value: Discriminator(

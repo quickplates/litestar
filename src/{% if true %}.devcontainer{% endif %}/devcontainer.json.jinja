@@ -38,19 +38,18 @@
       "version": "2.37.1"
     },
     "ghcr.io/devcontainers-extra/features/starship:1.0.10": {
-      "version": "1.24.0"
+      "version": "1.26.0"
     },
-    "ghcr.io/devcontainers/features/docker-in-docker:2.12.4": {
-      "version": "28.5.1"
+    "ghcr.io/devcontainers/features/docker-in-docker:4.1.0": {
+      "version": "29.8.0"
     },
-    "ghcr.io/devcontainers/features/nix:1.2.0": {
+    "ghcr.io/devcontainers/features/nix:1.3.1": {
       "extraNixConfig": "experimental-features = nix-command flakes",
-      "version": "2.28.5"
+      "version": "2.35.2"
     }
   },
   "mounts": [
     "source=devcontainer-shared-secrets,target=/secrets/,type=volume",
-    "source=devcontainer-${devcontainerId}-nix,target=/nix/,type=volume",
     "source=devcontainer-${devcontainerId}-shellhistory-persist,target=/persist/shellhistory/,type=volume",
     "source=devcontainer-shared-trunk-cache,target=/cache/trunk/,type=volume",
     "source=devcontainer-shared-uv-cache,target=/cache/uv/,type=volume"{% if docs %},

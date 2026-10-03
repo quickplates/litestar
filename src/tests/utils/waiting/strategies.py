@@ -29,7 +29,7 @@ class MaxRetriesStrategy(WaitStrategy):
         for _ in range(self._retries):
             try:
                 await condition.check()
-            except Exception as ex:
+            except Exception as ex:  # noqa: BLE001
                 exceptions.append(ex)
             else:
                 return
@@ -62,7 +62,7 @@ class TimeoutStrategy(WaitStrategy):
         while self._get_current_time() - start < self._timeout:
             try:
                 await condition.check()
-            except Exception as ex:
+            except Exception as ex:  # noqa: BLE001
                 exceptions.append(ex)
             else:
                 return

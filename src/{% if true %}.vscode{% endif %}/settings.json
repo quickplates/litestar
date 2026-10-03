@@ -1,8 +1,8 @@
 {
   "python.analysis.autoImportCompletions": true,
   "python.analysis.diagnosticMode": "workspace",
-  "python.analysis.diagnosticsSource": "Pyright",
-  "python.analysis.pyrightVersion": "1.1.407",
+  "python.analysis.diagnosticsSource": "Pylance + Pyright",
+  "python.analysis.pyrightVersion": "1.1.414",
   "python.analysis.showOnlyDirectDependenciesInAutoImport": true,
   "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "python.terminal.activateEnvironment": false,

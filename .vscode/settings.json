@@ -4,7 +4,7 @@
   },
   "git.autoRepositoryDetection": false,
   "python.analysis.diagnosticMode": "workspace",
-  "python.analysis.diagnosticsSource": "Pyright",
-  "python.analysis.pyrightVersion": "1.1.407",
+  "python.analysis.diagnosticsSource": "Pylance + Pyright",
+  "python.analysis.pyrightVersion": "1.1.414",
   "python.testing.pytestEnabled": true
 }

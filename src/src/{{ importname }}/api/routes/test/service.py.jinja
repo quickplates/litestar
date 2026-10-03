@@ -1,10 +1,8 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 
-from {{ importname }}.api.routes.test import errors as e
-from {{ importname }}.api.routes.test import models as m
-from {{ importname }}.services.test import errors as te
-from {{ importname }}.services.test import models as tm
+from {{ importname }}.api.routes.test import errors as e, models as m
+from {{ importname }}.services.test import errors as te, models as tm
 from {{ importname }}.services.test.service import TestService
 
 

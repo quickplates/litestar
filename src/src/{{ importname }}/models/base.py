@@ -5,6 +5,7 @@ from typing import Any, dataclass_transform, get_args, overload, override
 from pydantic import BaseModel, ConfigDict, Json, RootModel
 from pydantic.alias_generators import to_camel
 
+
 CONFIG = ConfigDict(
     # Add camelCase aliases for all fields
     alias_generator=to_camel,

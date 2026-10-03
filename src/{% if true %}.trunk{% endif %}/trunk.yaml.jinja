@@ -4,16 +4,16 @@ cli:
 plugins:
   sources:
     - id: trunk
-      ref: v1.7.4
+      ref: v1.11.0
       uri: https://github.com/trunk-io/plugins
 runtimes:
   enabled:
     # Needed for gitleaks, shfmt
-    - go@1.25.0
+    - go@1.27.0
     # Needed for {% if docs %}eslint, {% endif %}markdownlint, prettier, pyright{% if docs %}, stylelint, svgo{% endif %}
-    - node@22.20.0
+    - node@26.8.2
     # Needed for ruff, yamllint
-    - python@3.13.3
+    - python@3.14.4
 lint:
   ignore:
     - linters: [ALL]
@@ -71,50 +71,50 @@ lint:
     {%- endif %}
   enabled:
     # GitHub Actions linting
-    - actionlint@1.7.8
+    - actionlint@1.7.12
     {%- if docs %}
     # JavaScript and TypeScript linting
-    - eslint@9.39.1
+    - eslint@9.39.5
     {%- endif %}
     # Check for whitespace errors
     - git-diff-check
     # Check for secrets in the code
-    - gitleaks@8.29.0
+    - gitleaks@8.30.1
     # Dockerfile linting
-    - hadolint@2.14.0
+    - hadolint@2.15.1
     # Markdown linting
-    - markdownlint@0.45.0
+    - markdownlint@0.49.1
     # Nix formatting check
     - nix-fmt-check@SYSTEM
     # Nix flake check
     - nix-flake-check@SYSTEM
     # {% if docs %}JS, TS, CSS, HTML, {% endif %}JSON, YAML, Markdown formatting
-    - prettier@3.6.2:
+    - prettier@3.9.6:
         packages:
           # JSON sorting
-          - prettier-plugin-sort-json@4.1.1
+          - prettier-plugin-sort-json@4.2.0
           {%- if docs %}
           # package.json sorting
-          - prettier-plugin-packagejson@2.5.19
+          - prettier-plugin-packagejson@3.0.2
           {%- endif %}
     # Python type checking
-    - pyright@1.1.407
+    - pyright@1.1.414
     # Python formatting and linting
-    - ruff@0.14.5:
+    - ruff@0.16.7:
         commands:
           - lint
           - format
     # Shell linting
     - shellcheck@0.11.0
     # Shell formatting
-    - shfmt@3.12.0
+    - shfmt@3.14.1
     {%- if docs %}
     # CSS linting
-    - stylelint@16.25.0
+    - stylelint@17.15.0
     # SVG formatting
-    - svgo@4.0.0
+    - svgo@4.1.0
     {%- endif %}
     # TOML formatting
     - taplo@0.10.0
     # YAML linting
-    - yamllint@1.37.1
+    - yamllint@1.38.0

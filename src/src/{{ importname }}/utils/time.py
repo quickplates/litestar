@@ -6,14 +6,15 @@ from zoneinfo import ZoneInfo
 
 from pydantic import (
     AfterValidator,
+    AwareDatetime as PydanticAwareDatetime,
     BeforeValidator,
     Field,
+    NaiveDatetime as PydanticNaiveDatetime,
     PlainSerializer,
     TypeAdapter,
 )
-from pydantic import AwareDatetime as PydanticAwareDatetime
-from pydantic import NaiveDatetime as PydanticNaiveDatetime
 from pydantic.json_schema import Examples, WithJsonSchema
+
 
 type AwareDatetime = Annotated[
     PydanticAwareDatetime,

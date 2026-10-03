@@ -1,5 +1,5 @@
 # Python version to target
-target-version = "py313"
+target-version = "py314"
 
 select = [
   # Enable all rules
@@ -10,12 +10,13 @@ ignore = [
   # Disable rules that might conflict with the formatter
   "COM812",
   "COM819",
+  "D203",
   "D206",
+  "D213",
   "D300",
   "E111",
   "E114",
   "E117",
-  "E501",
   "ISC002",
   "Q000",
   "Q001",
@@ -26,24 +27,61 @@ ignore = [
   # Disable rules that are too strict
   "ANN401",
   "ARG",
-  "BLE",
+  "ASYNC109",
+  "B024",
+  "CPY",
   "D100",
   "D104",
   "D105",
   "D106",
   "D107",
+  "DTZ",
+  "EM101",
+  "EM102",
+  "ERA001",
+  "PLR1711",
+  "PLW0108",
+  "RET501",
   "S104",
+  "TC001",
+  "TC002",
+  "TC003",
+  "TC006",
+  "TRY003",
 ]
 
 [lint.extend-per-file-ignores]
 # Disable some rules in tests
 "tests/**" = [
-  # Disable irrelevant rules
-  "S",
+  # Disable rules that are too strict for tests
+  "FBT003",
+  "PLR0904",
+  "PLR0911",
+  "PLR0912",
+  "PLR0913",
+  "PLR0914",
+  "PLR0915",
+  "PLR0916",
+  "PLR0917",
+  "PLR1702",
+  "PLR2004",
+  "S101",
 ]
 
 [lint.isort]
+# Combine import aliases
+combine-as-imports = true
+
 known-first-party = [
   # Treat tests as a first-party module
   "tests",
 ]
+
+# Force 2 blank lines after imports
+lines-after-imports = 2
+
+[lint.pylint]
+# Increase limits
+max-args = 10
+max-bool-expr = 10
+max-positional-args = 10

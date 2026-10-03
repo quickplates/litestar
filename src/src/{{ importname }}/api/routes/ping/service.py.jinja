@@ -1,10 +1,8 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 
-from {{ importname }}.api.routes.ping import errors as e
-from {{ importname }}.api.routes.ping import models as m
-from {{ importname }}.services.ping import errors as pe
-from {{ importname }}.services.ping import models as pm
+from {{ importname }}.api.routes.ping import errors as e, models as m
+from {{ importname }}.services.ping import errors as pe, models as pm
 from {{ importname }}.services.ping.service import PingService
 
 
