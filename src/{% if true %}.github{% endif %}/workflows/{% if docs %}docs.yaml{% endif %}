@@ -38,23 +38,23 @@ jobs:
       pages: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v7.0.1
       - name: Setup Nix cache
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v6.1.0
         id: cache-nix
         with:
           path: ${{ env.NIX_CACHE_DIR }}
           key: docs-nix
       - name: Setup docs modules cache
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v6.1.0
         with:
           path: docs/node_modules/
           key: docs-modules
       - name: Install Nix
-        uses: cachix/install-nix-action@v31.8.4
+        uses: cachix/install-nix-action@v31.11.1
         with:
           github_access_token: ${{ github.token }}
-          install_url: https://releases.nixos.org/nix/nix-2.28.5/install
+          install_url: https://releases.nixos.org/nix/nix-2.35.2/install
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Import Nix store cache
         if: steps.cache-nix.outputs.cache-hit == 'true'
@@ -76,10 +76,11 @@ jobs:
           --out-dir
           build/
       - name: Setup Pages
-        uses: actions/configure-pages@v5.0.0
+        uses: actions/configure-pages@v6.0.0
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3.0.1
+        uses: actions/upload-pages-artifact@v5.0.0
         with:
+          include-hidden-files: true
           path: docs/build/
       # See: https://github.com/cachix/install-nix-action/issues/56
       - name: Export Nix store cache
@@ -112,4 +113,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        uses: actions/deploy-pages@v5.0.1

@@ -4,6 +4,7 @@ from pydantic import Field
 
 from {{ importname }}.models.events import test
 
+
 type Event = Annotated[
     test.TestEvent,
     Field(discriminator="type"),

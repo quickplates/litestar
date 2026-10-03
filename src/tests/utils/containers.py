@@ -2,7 +2,7 @@ import asyncio
 from types import TracebackType
 from typing import Self
 
-from testcontainers.core.container import DockerContainer
+from testcontainers.core.container import BytesExecResult, DockerContainer
 
 
 class AsyncDockerContainer(DockerContainer):
@@ -23,6 +23,6 @@ class AsyncDockerContainer(DockerContainer):
             self.__exit__, exception_type, exception, traceback
         )
 
-    async def aexec(self, command: str | list[str]) -> tuple[int, bytes]:
+    async def aexec(self, command: str | list[str]) -> BytesExecResult:
         """Execute."""
         return await asyncio.to_thread(self.exec, command)

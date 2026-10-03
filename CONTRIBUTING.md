@@ -26,7 +26,8 @@ to open the project in a `Dev Container`.
 If you don't want to use the `Dev Container` setup,
 you can also use [`Nix`](https://nixos.org) to setup your development environment.
 `flake.nix` contains the configuration of development shells.
-`Nix` will automatically install all dependencies and setup the environment for you.
+`Nix` will automatically install all dependencies
+and setup the environment for you.
 
 All you need to do is have `Nix` installed and run the following command:
 

@@ -1,9 +1,8 @@
 from collections.abc import Mapping
 
-from litestar import Controller as BaseController
-from litestar import handlers
+from litestar import Controller as BaseController, handlers
 from litestar.datastructures import ResponseHeader
-from litestar.di import Provide
+from litestar.di import NamedDependency, Provide
 from litestar.status_codes import HTTP_204_NO_CONTENT
 
 from {{ importname }}.api.routes.ping import models as m
@@ -40,7 +39,7 @@ class Controller(BaseController):
             ),
         ],
     )
-    async def ping(self, service: Service) -> None:
+    async def ping(self, service: NamedDependency[Service]) -> None:
         """Ping."""
         request = m.PingRequest()
 
@@ -57,7 +56,7 @@ class Controller(BaseController):
             ),
         ],
     )
-    async def headping(self, service: Service) -> None:
+    async def headping(self, service: NamedDependency[Service]) -> None:
         """Ping headers."""
         request = m.HeadPingRequest()
 

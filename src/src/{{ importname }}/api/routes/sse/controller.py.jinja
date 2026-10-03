@@ -2,11 +2,10 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Annotated
 
-from litestar import Controller as BaseController
-from litestar import handlers
+from litestar import Controller as BaseController, handlers
 from litestar.channels import ChannelsPlugin
 from litestar.datastructures import ResponseHeader
-from litestar.di import Provide
+from litestar.di import NamedDependency, Provide
 from litestar.openapi.spec import OpenAPIResponse, OpenAPIType, Operation, Schema
 from litestar.params import Parameter
 from litestar.response import ServerSentEvent, ServerSentEventMessage
@@ -39,7 +38,9 @@ class SubscribeOperation(Operation):
 class DependenciesBuilder:
     """Builder for the dependencies of the controller."""
 
-    async def _build_service(self, channels: ChannelsPlugin) -> Service:
+    async def _build_service(
+        self, channels: NamedDependency[ChannelsPlugin]
+    ) -> Service:
         return Service(events=EventsService(channels=channels))
 
     def build(self) -> Mapping[str, Provide]:
@@ -75,7 +76,7 @@ class Controller(BaseController):
     )
     async def subscribe(
         self,
-        service: Service,
+        service: NamedDependency[Service],
         types: Annotated[
             Jsonable[m.SubscribeRequestTypes] | None,
             Parameter(

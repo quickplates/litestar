@@ -4,6 +4,7 @@ from {{ importname }}.api.routes.ping.router import router as ping
 from {{ importname }}.api.routes.sse.router import router as sse
 from {{ importname }}.api.routes.test.router import router as test
 
+
 router = Router(
     path="/",
     route_handlers=[

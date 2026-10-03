@@ -11,5 +11,6 @@ class MessageTooLongError(ValidationError):
 
     def __init__(self, message: str, limit: int) -> None:
         super().__init__(
-            f"Message has {len(message)} characters, which exceeds the limit of {limit}."
+            f"Message has {len(message)} characters, "
+            f"which exceeds the limit of {limit}."
         )

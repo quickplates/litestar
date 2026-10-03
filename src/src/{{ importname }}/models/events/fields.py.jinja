@@ -5,6 +5,7 @@ from pydantic import Field
 from {{ importname }}.models.base import SerializableModel
 from {{ importname }}.utils.time import UTCDatetime
 
+
 type TypeField[T] = Annotated[
     T,
     Field(description="Type of the event."),

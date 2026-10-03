@@ -23,7 +23,7 @@ def test_copy(
     tmp_path = tmp_path_factory.mktemp("copied-template-")
 
     copier.run_copy(
-        str(cloned_template_directory),
+        f"git+file://{cloned_template_directory}",
         str(tmp_path),
         defaults=True,
         data=data,
